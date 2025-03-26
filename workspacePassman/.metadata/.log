@@ -284,3 +284,73 @@ Caused by: org.eclipse.core.internal.resources.ResourceException: Invalid projec
 
 !ENTRY org.eclipse.cdt.core 1 0 2024-12-03 22:25:27.276
 !MESSAGE Indexed 'Firmware' (41 sources, 101 headers) in 4.33 sec: 11,764 declarations; 100,142 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0018%)
+!SESSION 2024-12-06 18:11:09.338 -----------------------------------------------
+eclipse.buildId=Version 1.16.1
+java.version=17.0.11
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=cs_CZ
+Framework arguments:  -keyring /Users/jan/.eclipse_keyring
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -keyring /Users/jan/.eclipse_keyring
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2024-12-06 18:41:26.098
+!MESSAGE Log4j2 initialized with config file /Users/jan/Passman/workspacePassman/.metadata/.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2024-12-06 18:41:33.761
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.urischeme 4 0 2024-12-06 18:41:35.261
+!MESSAGE org.xml.sax.SAXParseException; lineNumber: 2; columnNumber: 10; DOCTYPE is disallowed when the feature "http://apache.org/xml/features/disallow-doctype-decl" set to true.
+!STACK 0
+java.lang.IllegalArgumentException: org.xml.sax.SAXParseException; lineNumber: 2; columnNumber: 10; DOCTYPE is disallowed when the feature "http://apache.org/xml/features/disallow-doctype-decl" set to true.
+	at org.eclipse.urischeme.internal.registration.PlistFileWriter.getDom(PlistFileWriter.java:221)
+	at org.eclipse.urischeme.internal.registration.PlistFileWriter.<init>(PlistFileWriter.java:69)
+	at org.eclipse.urischeme.internal.registration.RegistrationMacOsX.getPlistFileWriter(RegistrationMacOsX.java:122)
+	at org.eclipse.urischeme.internal.registration.RegistrationMacOsX.changePlistFile(RegistrationMacOsX.java:139)
+	at org.eclipse.urischeme.internal.registration.RegistrationMacOsX.handleSchemes(RegistrationMacOsX.java:55)
+	at org.eclipse.urischeme.AutoRegisterSchemeHandlersJob.run(AutoRegisterSchemeHandlersJob.java:95)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+Caused by: org.xml.sax.SAXParseException; lineNumber: 2; columnNumber: 10; DOCTYPE is disallowed when the feature "http://apache.org/xml/features/disallow-doctype-decl" set to true.
+	at java.xml/com.sun.org.apache.xerces.internal.parsers.DOMParser.parse(DOMParser.java:262)
+	at java.xml/com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderImpl.parse(DocumentBuilderImpl.java:342)
+	at org.eclipse.core.internal.runtime.XmlProcessorFactory.parseWithErrorOnDOCTYPE(XmlProcessorFactory.java:246)
+	at org.eclipse.urischeme.internal.registration.PlistFileWriter.getDom(PlistFileWriter.java:219)
+	... 6 more
+
+!ENTRY org.eclipse.cdt.core 1 0 2024-12-06 18:59:55.935
+!MESSAGE Indexed 'Firmware' (1,069 sources, 726 headers) in 15.5 sec: 62,222 declarations; 267,777 references; 0 unresolved inclusions; 39 syntax errors; 1,759 unresolved names (0.53%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2024-12-06 19:01:40.507
+!MESSAGE Indexed 'Firmware' (1,069 sources, 726 headers) in 12.4 sec: 62,222 declarations; 267,777 references; 0 unresolved inclusions; 39 syntax errors; 1,759 unresolved names (0.53%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2024-12-06 19:07:55.767
+!MESSAGE Indexed 'Firmware' (1,069 sources, 725 headers) in 11.8 sec: 62,222 declarations; 267,860 references; 0 unresolved inclusions; 39 syntax errors; 1,759 unresolved names (0.53%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2024-12-06 19:09:06.613
+!MESSAGE Indexed 'Firmware' (1,069 sources, 726 headers) in 8.66 sec: 62,222 declarations; 267,777 references; 0 unresolved inclusions; 39 syntax errors; 1,759 unresolved names (0.53%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2024-12-06 19:12:02.235
+!MESSAGE Indexed 'Firmware' (1,069 sources, 726 headers) in 9.21 sec: 62,222 declarations; 267,777 references; 0 unresolved inclusions; 39 syntax errors; 1,759 unresolved names (0.53%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2024-12-06 19:13:56.349
+!MESSAGE Indexed 'Firmware' (1,069 sources, 725 headers) in 9.53 sec: 62,222 declarations; 267,860 references; 0 unresolved inclusions; 39 syntax errors; 1,759 unresolved names (0.53%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2024-12-06 19:21:26.140
+!MESSAGE Indexed 'Firmware' (1,069 sources, 724 headers) in 8.68 sec: 62,099 declarations; 267,410 references; 0 unresolved inclusions; 38 syntax errors; 1,695 unresolved names (0.51%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2024-12-06 19:22:31.542
+!MESSAGE Indexed 'Firmware' (1,069 sources, 724 headers) in 8.67 sec: 62,099 declarations; 267,326 references; 0 unresolved inclusions; 38 syntax errors; 1,695 unresolved names (0.51%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2024-12-06 19:23:44.629
+!MESSAGE Indexed 'Firmware' (1,069 sources, 724 headers) in 8.67 sec: 62,099 declarations; 267,326 references; 0 unresolved inclusions; 38 syntax errors; 1,695 unresolved names (0.51%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2024-12-06 19:30:32.939
+!MESSAGE Indexed 'Firmware' (41 sources, 101 headers) in 4.58 sec: 11,764 declarations; 100,142 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0018%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2024-12-06 19:34:40.190
+!MESSAGE Indexed 'Firmware' (1,056 sources, 699 headers) in 9.61 sec: 59,470 declarations; 251,270 references; 2 unresolved inclusions; 38 syntax errors; 1,557 unresolved names (0.5%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2024-12-06 19:35:16.088
+!MESSAGE Indexed 'Firmware' (1,056 sources, 699 headers) in 9 sec: 59,470 declarations; 251,206 references; 2 unresolved inclusions; 38 syntax errors; 1,557 unresolved names (0.5%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2024-12-06 19:38:47.725
+!MESSAGE Indexed 'Firmware' (1,056 sources, 702 headers) in 13.7 sec: 59,474 declarations; 250,825 references; 0 unresolved inclusions; 38 syntax errors; 1,557 unresolved names (0.5%)
