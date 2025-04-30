@@ -1,0 +1,27 @@
+Diplomová práce 
+
+Microcontroller 
+- ESP32-C5 (nejspis tento)
+- Nordic - nRF52 
+- Raspberry Pi zero w
+
+Memory
+- SD karta
+- Flash
+- EEPROM
+
+Security
+- šifrování dat a komunikace
+- otisk prstu - optional
+
+Software
+- webové UI
+- desktop app (Qt?)
+
+Realizace
+Samostatné zařízení, které by sloužilo jako „trezor“ pro databázi hesel,
+která bude na zařízení zároveň uložena. Uživatelská data budou uložena v zašifrované podobě.
+Zařízení se bude dát připojit k PC, ve kterém poběží uživatelksé prostředí. 
+To bude sloužit pro správu samotné databáze. 
+Databáze bude ve soubor formátu sql, json nebo txt.
+Ovládání menu v zařízení bude realizováno pomocí tlačítek/enkodéru.
