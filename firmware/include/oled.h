@@ -18,4 +18,12 @@ extern Adafruit_SH1106G display;
 void display_setup();
 void test_print(int rotaryVal);
 
+/* Main Menu pages*/
+void menuPage1(int rotaryVal);
+void menuPage2(int rotaryVal);
+void menuPage3(int rotaryVal);
+
+/* Author page */
+void authorInfo();
+
 #endif // OLED_H

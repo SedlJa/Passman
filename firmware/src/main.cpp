@@ -15,10 +15,28 @@ void setup()
 
 void loop()
 {
-  // put your main code here, to run repeatedly:
-  rotary_loop();
-  delay(50); // Add a small delay to avoid flooding the serial output
-
-  // display test print
-  test_print(rotaryEncoder.readEncoder());
+  // BASIC MENU
+  if (rotaryEncoder.readEncoder() == 1)
+  {
+    menuPage1(rotaryEncoder.readEncoder());
+  }
+  else if (rotaryEncoder.readEncoder() == 2)
+  {
+    menuPage2(rotaryEncoder.readEncoder());
+  }
+  else if (rotaryEncoder.readEncoder() == 3)
+  {
+    menuPage3(rotaryEncoder.readEncoder());
+    if (rotaryEncoder.isEncoderButtonClicked())
+    {
+      while (!rotaryEncoder.isEncoderButtonClicked())
+      {
+        authorInfo();
+      }
+    }
+  }
+  else
+  {
+    test_print(rotaryEncoder.readEncoder());
+  }
 }
