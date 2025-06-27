@@ -25,11 +25,41 @@ void display_setup()
 void test_print(int rotaryVal)
 {
     // put your main code here, to run repeatedly:
-    display.setCursor(0, 0);
+    display.setCursor(0, 7);
     display.println((String) "Teplota: 25C");
     display.println((String) "Tlak: 950hPa");
     display.println((String) "Vlhkost: 65%");
     display.println((String) "Loviskuju ZUZANKU");
+    display.println((String) "Rotary value: " + (String)rotaryVal);
+    display.display();
+    delay(10);
+    display.clearDisplay();
+}
+
+/*
+    @brief function for displaying the first page
+*/
+void page1(int rotaryVal)
+{
+    // put your main code here, to run repeatedly:
+    display.setCursor(0, 0);
+    display.println((String) "-> Database");
+    display.println((String) "Password Generator");
+    display.println((String) "Rotary value: " + (String)rotaryVal);
+    display.display();
+    delay(10);
+    display.clearDisplay();
+}
+
+/*
+    @brief function for displaying the second page
+*/
+void page2(int rotaryVal)
+{
+    // put your main code here, to run repeatedly:
+    display.setCursor(0, 0);
+    display.println((String) "Database");
+    display.println((String) "-> Password Generator");
     display.println((String) "Rotary value: " + (String)rotaryVal);
     display.display();
     delay(10);

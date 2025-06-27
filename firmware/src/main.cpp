@@ -17,8 +17,18 @@ void loop()
 {
   // put your main code here, to run repeatedly:
   rotary_loop();
-  delay(50); // Add a small delay to avoid flooding the serial output
+  delay(20); // Add a small delay to avoid flooding the serial output
 
-  // display test print
-  test_print(rotaryEncoder.readEncoder());
+  if (rotaryEncoder.readEncoder() == 1)
+  {
+    page1(rotaryEncoder.readEncoder());
+  }
+  else if (rotaryEncoder.readEncoder() == 2)
+  {
+    page2(rotaryEncoder.readEncoder());
+  }
+  else
+  {
+    test_print(rotaryEncoder.readEncoder());
+  }
 }
