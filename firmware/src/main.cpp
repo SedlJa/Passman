@@ -1,6 +1,9 @@
 #include <Arduino.h>
+
+/* Include of own libs */
 #include "rotary.h"
 #include "oled.h"
+#include "authentication.h"
 
 void setup()
 {
@@ -15,6 +18,14 @@ void setup()
 
 void loop()
 {
+  // PIN AUTHENTICATION
+  // requires inserting a 4-digit pin.
+  insertPin();
+
+  // reset encoder
+  rotaryEncoder.setBoundaries(1, 3);
+  rotaryEncoder.setEncoderValue(1);
+
   // BASIC MENU
   if (rotaryEncoder.readEncoder() == 1)
   {
