@@ -55,9 +55,11 @@ void insertPin()
         {
         case 0:
             /* Handle 1st digit */
-            display.setCursor(25, 25);                            // set cursor position
+            display.setCursor(35, 5); // set cursor position
+            display.println((String) "INSERT PIN");
+            display.setCursor(35, 30);                            // set cursor position
             display.println((String)rotaryEncoder.readEncoder()); // display current value of the encoder
-            display.setCursor(25, 32);
+            display.setCursor(35, 38);
             display.println((String) "-");
             display.display();
             delay(10);
@@ -73,9 +75,11 @@ void insertPin()
 
         case 1:
             /* Handle 2nd digit */
-            display.setCursor(25, 25);                                                            // set cursor position
+            display.setCursor(35, 5); // set cursor position
+            display.println((String) "INSERT PIN");
+            display.setCursor(35, 30);                                                            // set cursor position
             display.println((String)insertedPin[0] + "  " + (String)rotaryEncoder.readEncoder()); // display current value of the encoder
-            display.setCursor(43, 32);
+            display.setCursor(53, 38);
             display.println((String) "-");
             display.display();
             delay(10);
@@ -91,9 +95,11 @@ void insertPin()
 
         case 2:
             /* Handle 3rd digit */
-            display.setCursor(25, 25);                                                                                            // set cursor position
+            display.setCursor(35, 5); // set cursor position
+            display.println((String) "INSERT PIN");
+            display.setCursor(35, 30);                                                                                            // set cursor position
             display.println((String)insertedPin[0] + "  " + (String)insertedPin[1] + "  " + (String)rotaryEncoder.readEncoder()); // display current value of the encoder
-            display.setCursor(61, 32);
+            display.setCursor(71, 38);
             display.println((String) "-");
             display.display();
             delay(10);
@@ -109,9 +115,11 @@ void insertPin()
 
         case 3:
             /* Handle 4th digit */
-            display.setCursor(25, 25);                                                                                                                            // set cursor position
+            display.setCursor(35, 5); // set cursor position
+            display.println((String) "INSERT PIN");
+            display.setCursor(35, 30);                                                                                                                            // set cursor position
             display.println((String)insertedPin[0] + "  " + (String)insertedPin[1] + "  " + (String)insertedPin[2] + "  " + (String)rotaryEncoder.readEncoder()); // display current value of the encoder
-            display.setCursor(79, 32);
+            display.setCursor(89, 38);
             display.println((String) "-");
             display.display();
             delay(10);
@@ -133,12 +141,11 @@ void insertPin()
                 currPos = 0;
                 Serial.println("Insert pin again...");
             }
-            currPos = 5;
-            break;
-
-        default:
-
-            break;
+            else
+            {
+                currPos = 5;
+                break;
+            }
         }
     }
 }
