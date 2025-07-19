@@ -18,15 +18,16 @@ void loop()
   // BASIC MENU
   if (rotaryEncoder.readEncoder() == 1)
   {
-    menuPage1(rotaryEncoder.readEncoder());
+    menuPage1();
   }
   else if (rotaryEncoder.readEncoder() == 2)
   {
-    menuPage2(rotaryEncoder.readEncoder());
+    menuPage2();
   }
   else if (rotaryEncoder.readEncoder() == 3)
   {
-    menuPage3(rotaryEncoder.readEncoder());
+    menuPage3();
+
     if (rotaryEncoder.isEncoderButtonClicked())
     {
       while (!rotaryEncoder.isEncoderButtonClicked())

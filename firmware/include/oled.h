@@ -14,14 +14,19 @@
 // Create instance of OLED display
 extern Adafruit_SH1106G display;
 
+/* Instances for main menu images */
+extern const unsigned char epd_bitmap_database[];
+extern const unsigned char epd_bitmap_connect[];
+extern const unsigned char epd_bitmap_settings[];
+
 /* Functions */
 void display_setup();
 void test_print(int rotaryVal);
 
 /* Main Menu pages*/
-void menuPage1(int rotaryVal);
-void menuPage2(int rotaryVal);
-void menuPage3(int rotaryVal);
+void menuPage1(); // database
+void menuPage2(); // connect
+void menuPage3(); // settings
 
 /* Author page */
 void authorInfo();
