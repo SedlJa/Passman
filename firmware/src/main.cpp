@@ -2,6 +2,9 @@
 #include "rotary.h"
 #include "oled.h"
 
+/* Global variables */
+bool connectionHandler = false; // Handles connection to webUI
+
 void setup()
 {
   Serial.begin(115200);
@@ -16,15 +19,30 @@ void setup()
 void loop()
 {
   // BASIC MENU
-  if (rotaryEncoder.readEncoder() == 1)
+  if (rotaryEncoder.readEncoder() == 1) // Database
   {
     menuPage1();
   }
-  else if (rotaryEncoder.readEncoder() == 2)
+  else if (rotaryEncoder.readEncoder() == 2) // Connect
   {
     menuPage2();
+    if (rotaryEncoder.isEncoderButtonClicked())
+    {
+      while (connectionHandler != true)
+      {
+        // Showing connection progress while connecting to webUI
+        Serial.println((String) "Connecting to webUI..."); // debug msg
+
+        connectingPage1();
+        delay(500);
+        connectingPage2();
+        delay(500);
+        connectingPage3();
+        delay(500);
+      }
+    }
   }
-  else if (rotaryEncoder.readEncoder() == 3)
+  else if (rotaryEncoder.readEncoder() == 3) // Settings
   {
     menuPage3();
 

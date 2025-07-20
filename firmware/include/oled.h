@@ -18,15 +18,23 @@ extern Adafruit_SH1106G display;
 extern const unsigned char epd_bitmap_database[];
 extern const unsigned char epd_bitmap_connect[];
 extern const unsigned char epd_bitmap_settings[];
+extern const unsigned char epd_bitmap_connecting1[];
+extern const unsigned char epd_bitmap_connecting2[];
+extern const unsigned char epd_bitmap_connecting3[];
 
 /* Functions */
 void display_setup();
 void test_print(int rotaryVal);
 
-/* Main Menu pages*/
+/* Main Menu pages */
 void menuPage1(); // database
 void menuPage2(); // connect
 void menuPage3(); // settings
+
+/* Connecting page */
+void connectingPage1();
+void connectingPage2();
+void connectingPage3();
 
 /* Author page */
 void authorInfo();
