@@ -1,4 +1,5 @@
 #include "oled.h"
+#include "i2c_finder.h"
 
 /* Defines */
 #define DELAYTIME 1000
@@ -426,6 +427,21 @@ void display_setup()
 {
     Wire.setPins(5, 4); // Set I2C pins [sda, scl ]
     Wire.begin();       // Inicializace I2C
+
+    int state; // OLED I2C state
+    state = find_I2C_addr();
+    if (state == 0)
+    {
+        Serial.print("OLED display found.");
+    }
+    else if (state == 1)
+    {
+        Serial.println("No I2C device found.");
+    }
+    else if (state == 2)
+    {
+        Serial.println("Unknown error.");
+    }
 
     display.begin(DISPLAYI2C_ADDR, true);
     display.clearDisplay();
