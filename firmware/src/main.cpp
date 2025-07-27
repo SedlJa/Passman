@@ -1,8 +1,10 @@
 #include <Arduino.h>
 #include "rotary.h"
 #include "oled.h"
+#include "fpcheck.h"
 
 /* Global variables */
+int unlockHandler = 0;          // Handles authentication
 bool connectionHandler = false; // Handles connection to webUI
 
 void setup()
@@ -14,10 +16,17 @@ void setup()
 
   /* OLED display init */
   display_setup();
+
+  /* Finger Print sensor init */
+  fpSetup(); // Sets up fp sensor
+
+  /* Unlock Procedure - fingerprint */
+  fpUnlockDevice(unlockHandler);
 }
 
 void loop()
 {
+
   // BASIC MENU
   if (rotaryEncoder.readEncoder() == 1) // Database
   {

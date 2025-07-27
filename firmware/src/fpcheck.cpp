@@ -16,7 +16,7 @@ Adafruit_Fingerprint finger = Adafruit_Fingerprint(&fpSerial);
 */
 void fpSetup()
 {
-    fpSerial.begin(FPBAUD, SERIAL_8N1, RX_PIN, TX_PIN); // Start fpSerial
+    fpSerial.begin(FPBAUD, SERIAL_8N1, TX_PIN, RX_PIN); // Start fpSerial
     delay(100);
 
     /* Check if sensor is found */
@@ -24,15 +24,29 @@ void fpSetup()
     delay(5);
     if (finger.verifyPassword())
     {
-        Serial.println("Found fingerprint sensor!");
+        Serial.println("Found fingerprint sensor!\r\n");
     }
     else
     {
-        Serial.println("Did not find fingerprint sensor :(");
+        Serial.println("\r\nDid not find fingerprint sensor :(");
         while (1)
         {
             delay(1);
         }
+    }
+
+    /* Check if fp sensor contains any finger template */
+    finger.getTemplateCount();
+    if (finger.templateCount == 0)
+    {
+        Serial.print("Sensor doesn't contain any fingerprint data. Please run the 'enroll' utility.");
+    }
+    else
+    {
+        Serial.println("Waiting for valid finger...");
+        Serial.print("Sensor contains ");
+        Serial.print(finger.templateCount);
+        Serial.println(" templates");
     }
 }
 
@@ -92,6 +106,7 @@ uint8_t getFingerprintID()
     if (p == FINGERPRINT_OK)
     {
         Serial.println("Found a print match!");
+        return 1;
     }
     else if (p == FINGERPRINT_PACKETRECIEVEERR)
     {
@@ -114,9 +129,34 @@ uint8_t getFingerprintID()
     Serial.print(finger.fingerID);
     Serial.print(" with confidence of ");
     Serial.println(finger.confidence);
-    waitAfterMatch();
+    delay(1000);
 
-    return finger.fingerID;
+    // return finger.fingerID;
+    return 1;
+}
+
+/*
+    @brief Function that handles device unlock procedure
+    @param handler  handler for global use
+*/
+void fpUnlockDevice(int handler)
+{
+    /* Unlock procedure */
+    while (1)
+    {
+        unlockPage(); // Show unlock page
+
+        handler = getFingerprintID(); // Enables scanning and saves return value
+
+        if (handler == 1)
+        {
+            Serial.println((String) "Device UNLOCKED, unlockHandler value: " + (String)handler);
+            break;
+        }
+    }
+
+    // Show Tick when succesfully logged in
+    unlockSuccessfull();
 }
 
 /*
