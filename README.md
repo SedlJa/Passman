@@ -11,5 +11,5 @@ This project is a practical part of my master thesis. The theoretical part of th
 
 ## Repo overview
 
-    _docs\ - Contains all used or useful documents
-    firmware\ - Contains firmware files
+    \_docs - Contains all used or useful documents
+    \firmware - Contains firmware files
