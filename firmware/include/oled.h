@@ -26,6 +26,10 @@ extern const unsigned char epd_bitmap_connecting3[];
 void display_setup();
 void test_print(int rotaryVal);
 
+/* Unlock page */
+void unlockPage();        // while scanning fingerprint
+void unlockSuccessfull(); // Shows tick while authentication passed
+
 /* Main Menu pages */
 void menuPage1(); // database
 void menuPage2(); // connect
