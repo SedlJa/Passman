@@ -151,6 +151,7 @@ void fpUnlockDevice(int handler)
         if (handler == 1)
         {
             Serial.println((String) "Device UNLOCKED, unlockHandler value: " + (String)handler);
+            fpSerial.end(); // End fpSerial for the consumption save
             break;
         }
     }
