@@ -39,6 +39,8 @@ void menuPage3(); // settings
 void connectingPage1();
 void connectingPage2();
 void connectingPage3();
+void connectedToApp();
+void disconnectedFromApp();
 
 /* Author page */
 void authorInfo();
