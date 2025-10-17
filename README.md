@@ -1,5 +1,5 @@
 # Passman
-This project is a practical part of my master thesis. The theoretical part of the thesis is focused on storing passwords in a safe way. In the practical part I am developing and embedded device for storing passwords and an application for managing the password database, enhanced with password generator for creating a new and `SAFE` passwords. 
+I am developing embedded password manager with a desktop app as a part of my master thesis.  
 
 - Author: bc. Jan Sedlak
 - Supervisor: Ing. Ondřej Nentvich, Ph.D.
@@ -7,9 +7,12 @@ This project is a practical part of my master thesis. The theoretical part of th
 - Field: Technology of the Internet of Things
 - Department: Radioelectronics
 
-
-
 ## Repo overview
 
-    \_docs - Contains all used or useful documents
-    \firmware - Contains firmware files
+    _docs - All used or useful documents
+    SW - Firmware and desktop application files
+    HW - PCB and enclosure files
+
+## First prototype
+<img src = "HW/box_v1.png" width="300">
+
