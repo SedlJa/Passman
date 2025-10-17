@@ -7,12 +7,14 @@ I am developing embedded password manager with a desktop app as a part of my mas
 - Field: Technology of the Internet of Things
 - Department: Radioelectronics
 
-## Repo overview
-
-    _docs - All used or useful documents
-    SW - Firmware and desktop application files
-    HW - PCB and enclosure files
-
 ## First prototype
 <img src = "HW/box_v1.png" width="300">
+
+## Repo overview
+
+    /_docs - All used or useful documents
+    /SW - Firmware and desktop application files
+    /HW - PCB and enclosure files
+
+
 
