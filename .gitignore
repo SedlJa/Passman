@@ -1,6 +1,6 @@
 # This file is used to ignore files and directories in a Git repository.
 
-HW/pcb/Fusion
+HW/Fusion
 HW/pcb/
 _images/diagrams
 .DS_Store
