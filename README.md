@@ -8,7 +8,7 @@ I am developing embedded password manager with a desktop app as a part of my mas
 - Department: Radioelectronics
 
 ## First prototype
-<img src = "HW/box_v1.png" width="300">
+<img src = "HW/box_v1.png" width="300"><img src = "HW/pcb_v2.png" width="400">
 
 ## Repo overview
 
