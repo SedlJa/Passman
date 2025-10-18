@@ -8,6 +8,8 @@
 int unlockHandler = 0;          // Handles authentication
 bool connectionHandler = false; // Handles connection to webUI
 bool dbHandler = true;
+bool stringComplete = false;
+String receivedData = " ";
 
 void setup()
 {
@@ -27,6 +29,9 @@ void setup()
 
   /* database init */
   loadDatabase();
+
+  // Reserve memory for the String to reduce memory fragmentation
+  receivedData.reserve(200);
 }
 
 void loop()
@@ -52,18 +57,8 @@ void loop()
     menuPage2();
     if (rotaryEncoder.isEncoderButtonClicked())
     {
-      while (connectionHandler != true)
-      {
-        // Showing connection progress while connecting to webUI
-        Serial.println((String) "Connecting to webUI..."); // debug msg
-
-        connectingPage1();
-        delay(500);
-        connectingPage2();
-        delay(500);
-        connectingPage3();
-        delay(500);
-      }
+      connectingPage3();
+      readSerialData(receivedData, stringComplete);
     }
   }
   else if (rotaryEncoder.readEncoder() == 3) // Settings

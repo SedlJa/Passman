@@ -2,6 +2,7 @@
 
 #include <WString.h>
 #include <vector>
+#include <Arduino.h>
 
 #define DB_LENGTH 10
 
@@ -10,7 +11,7 @@ using namespace std;
 // Structure to represent a database
 struct Database
 {
-    int id[DB_LENGTH];
+    String id[DB_LENGTH];
     String username[DB_LENGTH];
     String password[DB_LENGTH];
 };
@@ -18,3 +19,5 @@ struct Database
 extern Database db;
 
 void loadDatabase();
+void parseAndStoreData(String data);
+void readSerialData(String inputString, bool status);
