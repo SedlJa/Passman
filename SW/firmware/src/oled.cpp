@@ -1,5 +1,6 @@
 #include "oled.h"
 #include "i2c_finder.h"
+#include "database.h"
 
 /* Defines */
 #define DELAYTIME 1000
@@ -9,6 +10,223 @@
 
 /* Create diplay instance */
 Adafruit_SH1106G display = Adafruit_SH1106G(DISPLAYWIDTH, DISPLAYHEIGH, &Wire, -1);
+
+/* Functions */
+
+/**
+ * @brief function that setups OLED display
+ */
+void display_setup()
+{
+    Wire.setPins(5, 4); // Set I2C pins [sda, scl ]
+    Wire.begin();       // Inicializace I2C
+
+    int state; // OLED I2C state
+    state = find_I2C_addr();
+    if (state == 0)
+    {
+        Serial.print("OLED display found.\r\n");
+    }
+    else if (state == 1)
+    {
+        Serial.println("No I2C device found.\r\n");
+    }
+    else if (state == 2)
+    {
+        Serial.println("Unknown error.\r\n");
+    }
+
+    display.begin(DISPLAYI2C_ADDR, true);
+    display.clearDisplay();
+    display.setTextColor(SH110X_WHITE);
+    display.setTextSize(1);
+}
+
+void test_print(int rotaryVal)
+{
+    // put your main code here, to run repeatedly:
+    display.setCursor(0, 7);
+    display.println((String) "Teplota: 25C");
+    display.println((String) "Tlak: 950hPa");
+    display.println((String) "Vlhkost: 65%");
+    display.println((String) "Loviskuju ZUZANKU");
+    display.println((String) "Rotary value: " + (String)rotaryVal);
+    display.display();
+    delay(10);
+    display.clearDisplay();
+}
+
+/**
+ * @brief function for displaying the fingerprint sensor while unlocking the device
+ */
+void unlockPage()
+{
+    // 1st stage
+    display.clearDisplay();
+    display.drawBitmap(0, 0, epd_bitmap_fpsensor, 128, 64, SH110X_WHITE);
+    display.display();
+    delay(20);
+    display.clearDisplay();
+}
+/**
+ * @brief Function that shows tick while authentication passed
+ */
+void unlockSuccessfull()
+{
+    // stage 1
+    display.clearDisplay();
+    display.drawBitmap(0, 0, epd_bitmap_tick, 128, 64, SH110X_WHITE);
+    display.display();
+    delay(1000);
+    display.clearDisplay();
+    // stage 2
+    display.drawBitmap(0, 0, epd_bitmap_tick2, 128, 64, SH110X_WHITE);
+    display.display();
+    delay(1000);
+    display.clearDisplay();
+    // stage 1
+    display.drawBitmap(0, 0, epd_bitmap_tick3, 128, 64, SH110X_WHITE);
+    display.display();
+    delay(1000);
+    display.clearDisplay();
+}
+
+/**
+ * @brief function for displaying the first page
+ */
+void menuPage1()
+{
+    // put your main code here, to run repeatedly:
+    display.clearDisplay();
+    display.drawBitmap(0, 0, epd_bitmap_database, 128, 64, SH110X_WHITE);
+    display.display();
+    delay(10);
+    display.clearDisplay();
+}
+
+/**
+ * @brief function for displaying the second page
+ */
+void menuPage2()
+{
+    // put your main code here, to run repeatedly:
+    display.clearDisplay();
+    display.drawBitmap(0, 0, epd_bitmap_connect, 128, 64, SH110X_WHITE);
+    display.display();
+    delay(10);
+    display.clearDisplay();
+}
+
+/**
+ * @brief function for displaying the third page
+ */
+void menuPage3()
+{
+    // put your main code here, to run repeatedly:
+    display.clearDisplay();
+    display.drawBitmap(0, 0, epd_bitmap_settings, 128, 64, SH110X_WHITE);
+    display.display();
+    delay(10);
+    display.clearDisplay();
+}
+
+/**
+ * @brief Function for showing connection progress
+ */
+void connectingPage1()
+{
+    display.clearDisplay();
+    display.drawBitmap(0, 0, epd_bitmap_connecting1, 128, 64, SH110X_WHITE);
+    display.display();
+    delay(10);
+    display.clearDisplay();
+}
+
+/**
+ * @brief Function for showing connection progress
+ */
+void connectingPage2()
+{
+    display.clearDisplay();
+    display.drawBitmap(0, 0, epd_bitmap_connecting2, 128, 64, SH110X_WHITE);
+    display.display();
+    delay(10);
+    display.clearDisplay();
+}
+
+/**
+ * @brief Function for showing connection progress
+ */
+void connectingPage3()
+{
+    display.clearDisplay();
+    display.drawBitmap(0, 0, epd_bitmap_connecting3, 128, 64, SH110X_WHITE);
+    display.display();
+    delay(10);
+    display.clearDisplay();
+}
+
+/**
+ * @brief Page shown when the device is connected successfully
+ */
+void connectedToApp()
+{
+    display.clearDisplay();
+    display.drawBitmap(0, 0, epd_bitmap_connected_to_app, 128, 64, SH110X_WHITE);
+    display.display();
+    delay(10);
+    display.clearDisplay();
+}
+
+/**
+ * @brief Page shown when the device is disconnected
+ */
+void disconnectedFromApp()
+{
+    display.clearDisplay();
+    display.drawBitmap(0, 0, epd_bitmap_disconnected_from_app, 128, 64, SH110X_WHITE);
+    display.display();
+    delay(10);
+    display.clearDisplay();
+}
+
+/**
+ * @brief Page that shows each database item
+ */
+void databasePage(int dbEntry)
+{
+    display.setCursor(0, 0);
+    display.println((String)db.id[dbEntry]);
+    display.println((String) "");
+    display.println((String) "Username:");
+    display.println((String)db.username[dbEntry]);
+    display.println((String) " ");
+    display.println((String) " ");
+    display.println((String) "Password");
+    display.println((String)db.password[dbEntry]);
+    display.display();
+    delay(10);
+    display.clearDisplay();
+}
+
+/**
+ * @brief function for displaying the author info Page
+ */
+void authorInfo()
+{
+    // put your main code here, to run repeatedly:
+    display.setCursor(0, 0);
+    display.println((String) "bc. Jan Sedlak");
+    display.println((String) "");
+    display.println((String) "CTU in Prague");
+    display.println((String) " ");
+    display.println((String) "Faculty of electricalengeneering");
+    display.println((String) " ");
+    display.println((String) "Press to return...");
+    display.display();
+    delay(10);
+    display.clearDisplay();
+}
 
 // 'database', 128x64px
 const unsigned char epd_bitmap_database[] PROGMEM = {
@@ -820,201 +1038,3 @@ const unsigned char *epd_bitmap_allArray[epd_bitmap_allArray_LEN] = {
     epd_bitmap_connected_to_app,
     epd_bitmap_disconnected_from_app,
 };
-
-/* Functions */
-
-/*
-    @brief function that setups OLED display
-*/
-void display_setup()
-{
-    Wire.setPins(5, 4); // Set I2C pins [sda, scl ]
-    Wire.begin();       // Inicializace I2C
-
-    int state; // OLED I2C state
-    state = find_I2C_addr();
-    if (state == 0)
-    {
-        Serial.print("OLED display found.\r\n");
-    }
-    else if (state == 1)
-    {
-        Serial.println("No I2C device found.\r\n");
-    }
-    else if (state == 2)
-    {
-        Serial.println("Unknown error.\r\n");
-    }
-
-    display.begin(DISPLAYI2C_ADDR, true);
-    display.clearDisplay();
-    display.setTextColor(SH110X_WHITE);
-    display.setTextSize(1);
-}
-
-void test_print(int rotaryVal)
-{
-    // put your main code here, to run repeatedly:
-    display.setCursor(0, 7);
-    display.println((String) "Teplota: 25C");
-    display.println((String) "Tlak: 950hPa");
-    display.println((String) "Vlhkost: 65%");
-    display.println((String) "Loviskuju ZUZANKU");
-    display.println((String) "Rotary value: " + (String)rotaryVal);
-    display.display();
-    delay(10);
-    display.clearDisplay();
-}
-
-/*
-    @brief function for displaying the fingerprint sensor while unlocking the device
-*/
-void unlockPage()
-{
-    // 1st stage
-    display.clearDisplay();
-    display.drawBitmap(0, 0, epd_bitmap_fpsensor, 128, 64, SH110X_WHITE);
-    display.display();
-    delay(20);
-    display.clearDisplay();
-}
-/*
-    @brief Function that shows tick while authentication passed
-*/
-void unlockSuccessfull()
-{
-    // stage 1
-    display.clearDisplay();
-    display.drawBitmap(0, 0, epd_bitmap_tick, 128, 64, SH110X_WHITE);
-    display.display();
-    delay(1000);
-    display.clearDisplay();
-    // stage 2
-    display.drawBitmap(0, 0, epd_bitmap_tick2, 128, 64, SH110X_WHITE);
-    display.display();
-    delay(1000);
-    display.clearDisplay();
-    // stage 1
-    display.drawBitmap(0, 0, epd_bitmap_tick3, 128, 64, SH110X_WHITE);
-    display.display();
-    delay(1000);
-    display.clearDisplay();
-}
-
-/*
-    @brief function for displaying the first page
-*/
-void menuPage1()
-{
-    // put your main code here, to run repeatedly:
-    display.clearDisplay();
-    display.drawBitmap(0, 0, epd_bitmap_database, 128, 64, SH110X_WHITE);
-    display.display();
-    delay(10);
-    display.clearDisplay();
-}
-
-/*
-    @brief function for displaying the second page
-*/
-void menuPage2()
-{
-    // put your main code here, to run repeatedly:
-    display.clearDisplay();
-    display.drawBitmap(0, 0, epd_bitmap_connect, 128, 64, SH110X_WHITE);
-    display.display();
-    delay(10);
-    display.clearDisplay();
-}
-
-/*
-    @brief function for displaying the third page
-*/
-void menuPage3()
-{
-    // put your main code here, to run repeatedly:
-    display.clearDisplay();
-    display.drawBitmap(0, 0, epd_bitmap_settings, 128, 64, SH110X_WHITE);
-    display.display();
-    delay(10);
-    display.clearDisplay();
-}
-
-/*
-    @brief Function for showing connection progress
-*/
-void connectingPage1()
-{
-    display.clearDisplay();
-    display.drawBitmap(0, 0, epd_bitmap_connecting1, 128, 64, SH110X_WHITE);
-    display.display();
-    delay(10);
-    display.clearDisplay();
-}
-
-/*
-    @brief Function for showing connection progress
-*/
-void connectingPage2()
-{
-    display.clearDisplay();
-    display.drawBitmap(0, 0, epd_bitmap_connecting2, 128, 64, SH110X_WHITE);
-    display.display();
-    delay(10);
-    display.clearDisplay();
-}
-
-/**
- * @brief Function for showing connection progress
- */
-void connectingPage3()
-{
-    display.clearDisplay();
-    display.drawBitmap(0, 0, epd_bitmap_connecting3, 128, 64, SH110X_WHITE);
-    display.display();
-    delay(10);
-    display.clearDisplay();
-}
-
-/**
- * @brief Page shown when the device is connected successfully
- */
-void connectedToApp()
-{
-    display.clearDisplay();
-    display.drawBitmap(0, 0, epd_bitmap_connected_to_app, 128, 64, SH110X_WHITE);
-    display.display();
-    delay(10);
-    display.clearDisplay();
-}
-
-/**
- * @brief Page shown when the device is disconnected
- */
-void disconnectedFromApp()
-{
-    display.clearDisplay();
-    display.drawBitmap(0, 0, epd_bitmap_disconnected_from_app, 128, 64, SH110X_WHITE);
-    display.display();
-    delay(10);
-    display.clearDisplay();
-}
-
-/*
-    @brief function for displaying the author info Page
-*/
-void authorInfo()
-{
-    // put your main code here, to run repeatedly:
-    display.setCursor(0, 0);
-    display.println((String) "bc. Jan Sedlak");
-    display.println((String) "");
-    display.println((String) "CTU in Prague");
-    display.println((String) " ");
-    display.println((String) "Faculty of electricalengeneering");
-    display.println((String) " ");
-    display.println((String) "Press to return...");
-    display.display();
-    delay(10);
-    display.clearDisplay();
-}

@@ -2,10 +2,12 @@
 #include "rotary.h"
 #include "oled.h"
 #include "fpcheck.h"
+#include "database.h"
 
 /* Global variables */
 int unlockHandler = 0;          // Handles authentication
 bool connectionHandler = false; // Handles connection to webUI
+bool dbHandler = true;
 
 void setup()
 {
@@ -22,6 +24,9 @@ void setup()
 
   /* Unlock Procedure - fingerprint */
   fpUnlockDevice(unlockHandler);
+
+  /* database init */
+  loadDatabase();
 }
 
 void loop()
@@ -31,6 +36,16 @@ void loop()
   if (rotaryEncoder.readEncoder() == 1) // Database
   {
     menuPage1();
+    if (rotaryEncoder.isEncoderButtonClicked())
+    {
+      rotaryEncoder.setBoundaries(0, DB_LENGTH - 1, false); // update boundaries to db lenght
+      rotaryEncoder.setEncoderValue(0);
+      while (!rotaryEncoder.isEncoderButtonClicked())
+      {
+        databasePage(rotaryEncoder.readEncoder()); // show database
+      }
+      rotaryEncoder.setBoundaries(1, 3, false); // update boundaries to db lenght
+    }
   }
   else if (rotaryEncoder.readEncoder() == 2) // Connect
   {
@@ -62,9 +77,5 @@ void loop()
         authorInfo();
       }
     }
-  }
-  else
-  {
-    test_print(rotaryEncoder.readEncoder());
   }
 }

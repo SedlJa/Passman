@@ -21,6 +21,12 @@ extern const unsigned char epd_bitmap_settings[];
 extern const unsigned char epd_bitmap_connecting1[];
 extern const unsigned char epd_bitmap_connecting2[];
 extern const unsigned char epd_bitmap_connecting3[];
+extern const unsigned char epd_bitmap_fpsensor[];
+extern const unsigned char epd_bitmap_tick[];
+extern const unsigned char epd_bitmap_tick2[];
+extern const unsigned char epd_bitmap_tick3[];
+extern const unsigned char epd_bitmap_connected_to_app[];
+extern const unsigned char epd_bitmap_disconnected_from_app[];
 
 /* Functions */
 void display_setup();
@@ -41,6 +47,9 @@ void connectingPage2();
 void connectingPage3();
 void connectedToApp();
 void disconnectedFromApp();
+
+/* Database */
+void databasePage(int dbEntry);
 
 /* Author page */
 void authorInfo();
