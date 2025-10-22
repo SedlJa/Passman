@@ -13,7 +13,7 @@ String receivedData = " ";
 
 void setup()
 {
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   /* Rotary encoder init */
   rotary_setup();
@@ -58,7 +58,25 @@ void loop()
     if (rotaryEncoder.isEncoderButtonClicked())
     {
       connectingPage3();
-      readSerialData(receivedData, stringComplete);
+      // readSerialData(receivedData, stringComplete);
+      Serial.println("load");
+      while (true)
+      {
+        if (Serial.available() > 0)
+        {
+          String message = Serial.readStringUntil('\n');
+          message.trim(); // Remove any trailing whitespace or newline characters
+          if (message == "ok")
+          {
+            break;
+          }
+        }
+      }
+      Serial.println("1;username;password");
+      Serial.println("2;username;password");
+      Serial.println("3;username;password");
+      Serial.println("4;username;password");
+      Serial.println("end");
     }
   }
   else if (rotaryEncoder.readEncoder() == 3) // Settings
