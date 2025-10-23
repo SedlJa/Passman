@@ -1,4 +1,4 @@
-# pylint: disable
+# pylint: disable=all
 
 import sys
 from PySide6 import QtWidgets, QtCore
@@ -43,11 +43,16 @@ class MainWindow(QMainWindow):
         self.disconnectButton.clicked.connect(self.disconnect_from_port)
         self.disconnectButton.move(250, 0)
 
-        # Read Serial port button
-        self.readSerialButton = QtWidgets.QPushButton(self)
-        self.readSerialButton.setText("Read Serial")
-        self.readSerialButton.clicked.connect(self.read_serial_data)
-        self.readSerialButton.move(250, 75)
+        # Load password database
+        self.loadDBButton = QtWidgets.QPushButton(self)
+        self.loadDBButton.setText("Load DB")
+        self.loadDBButton.clicked.connect(self.load_database)
+        self.loadDBButton.move(150, 75)
+
+        # Upload database to device
+        self.uploadDBButton = QtWidgets.QPushButton(self)
+        self.uploadDBButton.setText("Upload DB")
+        self.uploadDBButton.move(250, 75)
 
         # text area to display content from the connected serial port
         self.serial_output_textedit = QtWidgets.QTextEdit(self)
@@ -75,6 +80,7 @@ class MainWindow(QMainWindow):
                 QtWidgets.QMessageBox.information(self, "Connection", f"Connected to {selected_port}")
             else:
                 QtWidgets.QMessageBox.critical(self, "Error", f"Failed to connect to {selected_port}")
+
     def disconnect_from_port(self):
         if self.serial.isOpen():
             self.serial.close()
@@ -82,19 +88,19 @@ class MainWindow(QMainWindow):
         else:
             QtWidgets.QMessageBox.warning(self, "Warning", "Serial port is not open")
     
-    def read_serial_data(self):
+    def load_database(self):
+        # load database method
+        print("Loading database...\n")
         if self.serial.isOpen():
             try:
                 data = self.serial.readAll().data().decode('utf-8')
                 self.serial_output_textedit.append(data)
+                # wait for "load" command
                 if data.strip() == "load":
                     self.serial.write(b"ok\n")
-                    print("got load command")
-                elif data.strip() == "end":
-                    print("End of communication..")
-                    for i in range(len(self.entryID)):
-                        print(f"Entry {i + 1}: ID={self.entryID[i]}, Username={self.entryUSRNAME[i]}, Password={self.entryPSW[i]}")
-                else:
+                    print("Command: load")
+                    
+                    # Read database from serail
                     lines = data.strip().split('\n')  # Assuming each entry is on a new line
                     for line in lines:
                         parts = line.split(';')
@@ -105,11 +111,20 @@ class MainWindow(QMainWindow):
                             self.entryUSRNAME.append(entryUSRNAME)
                             self.entryPSW.append(entryPSW)
                 
+                # "end" command to end database transfer
+                elif data.strip() == "end":
+                    print("Command: end")
+                    for i in range(len(self.entryID)):
+                        print(f"Entry {i + 1}: ID={self.entryID[i]}, Username={self.entryUSRNAME[i]}, Password={self.entryPSW[i]}")
+                else:
+                    pass
+                
 
             except Exception as e:
                 QtWidgets.QMessageBox.critical(self, "Error", f"Failed to read data: {str(e)}")
         else:
             QtWidgets.QMessageBox.warning(self, "Warning", "Serial port is not open")
+
 
 def Window():
     app = QApplication(sys.argv)
