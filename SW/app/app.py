@@ -91,15 +91,46 @@ class MainWindow(QMainWindow):
     def load_database(self):
         # load database method
         print("Loading database...\n")
+        self.serial.write(b"load\n")
+
         if self.serial.isOpen():
             try:
                 data = self.serial.readAll().data().decode('utf-8')
+                self.serial_output_textedit.append(data)
+                # Read database from serail
+                lines = data.strip().split('\n')  # Assuming each entry is on a new line
+                for line in lines:
+                    parts = line.split(';')
+                    if len(parts) == 3:
+                        entryID, entryUSRNAME, entryPSW = parts
+                        print(f"ID: {entryID}, Username: {entryUSRNAME}, Password: {entryPSW}")
+                        self.entryID.append(entryID)
+                        self.entryUSRNAME.append(entryUSRNAME)
+                        self.entryPSW.append(entryPSW)
+
+            except Exception as e:
+                    QtWidgets.QMessageBox.critical(self, "Error", f"Failed to read data: {str(e)}")
+        else:
+            QtWidgets.QMessageBox.warning(self, "Warning", "Serial port is not open")
+        """
+        if self.serial.isOpen():
+            try:
+                data = self.serial.readLine().data().decode('utf-8')
                 self.serial_output_textedit.append(data)
                 # wait for "load" command
                 if data.strip() == "load":
                     self.serial.write(b"ok\n")
                     print("Command: load")
-                    
+                
+                # "end" command to end database transfer
+                elif data.strip() == "end":
+                    print("Command: end")
+                    if len(self.entryID) > 0:
+                        for i in range(len(self.entryID)):
+                            print(f"Entry {i + 1}: ID={self.entryID[i]}, Username={self.entryUSRNAME[i]}, Password={self.entryPSW[i]}")
+                    else:
+                        print("Error: No entries loaded.")        
+                else:
                     # Read database from serail
                     lines = data.strip().split('\n')  # Assuming each entry is on a new line
                     for line in lines:
@@ -111,20 +142,12 @@ class MainWindow(QMainWindow):
                             self.entryUSRNAME.append(entryUSRNAME)
                             self.entryPSW.append(entryPSW)
                 
-                # "end" command to end database transfer
-                elif data.strip() == "end":
-                    print("Command: end")
-                    for i in range(len(self.entryID)):
-                        print(f"Entry {i + 1}: ID={self.entryID[i]}, Username={self.entryUSRNAME[i]}, Password={self.entryPSW[i]}")
-                else:
-                    pass
-                
 
             except Exception as e:
                 QtWidgets.QMessageBox.critical(self, "Error", f"Failed to read data: {str(e)}")
         else:
             QtWidgets.QMessageBox.warning(self, "Warning", "Serial port is not open")
-
+        """
 
 def Window():
     app = QApplication(sys.argv)
