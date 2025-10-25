@@ -66,6 +66,7 @@ class MainWindow(QMainWindow):
         # Upload database to device
         self.uploadDBButton = QtWidgets.QPushButton(self)
         self.uploadDBButton.setText("Upload DB")
+        self.uploadDBButton.clicked.connect(self.upload_database)
         self.uploadDBButton.move(590, 125)
 
         # Add button to add a new entry
@@ -165,6 +166,29 @@ class MainWindow(QMainWindow):
 
             except Exception as e:
                     QtWidgets.QMessageBox.critical(self, "Error", f"Failed to read data: {str(e)}")
+        else:
+            QtWidgets.QMessageBox.warning(self, "Warning", "Serial port is not open")
+
+    def upload_database(self):
+        self.serial.write(b"download\n")
+
+        if(self.serial.isOpen()):
+            try:
+                # Prepare the database content
+                if not self.entryID:
+                    QtWidgets.QMessageBox.warning(self, "Warning", "Database is empty")
+                    return
+
+                database_content = ""
+                for i in range(len(self.entryID)):
+                    database_content += f"{self.entryID[i]};{self.entryUSRNAME[i]};{self.entryPSW[i]}\n"
+
+                # Send the database content over the serial port
+                self.serial.write(database_content.encode('utf-8'))
+                print(database_content)
+
+            except Exception as e:
+                QtWidgets.QMessageBox.critical(self, "Error", f"Failed to upload data to device: {str(e)}")
         else:
             QtWidgets.QMessageBox.warning(self, "Warning", "Serial port is not open")
 

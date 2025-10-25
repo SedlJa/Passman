@@ -19,5 +19,5 @@ struct Database
 extern Database db;
 
 void loadDatabase();
-void parseAndStoreData(String data);
-void readSerialData(String inputString, bool status);
+void parseAndStoreData(String data, int pos);
+void readSerialData(String inputString, bool status, int pos);

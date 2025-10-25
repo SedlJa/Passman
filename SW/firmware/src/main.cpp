@@ -84,18 +84,40 @@ void loop()
             }
           }
         }
-        else // Download database from app
+        else if (rotaryEncoder.readEncoder() == 2) // Download database from app
         {
           downloadPage();
           if (rotaryEncoder.isEncoderButtonClicked())
           {
-            Serial.println("Command: download");
+            while (true)
+            {
+              if (Serial.available() > 0)
+              {
+                String message = Serial.readStringUntil('\n');
+                message.trim(); // Remove any trailing whitespace or newline characters
+                if (message == "download")
+                {
+                  for (int i = 0; i < 3; i++)
+                  {
+                    while (Serial.available() == 0)
+                    {
+                      // Wait for data
+                    }
+                    String dataLine = Serial.readStringUntil('\n');
+                    dataLine.trim(); // Remove any trailing whitespace or newline characters
+                    parseAndStoreData(dataLine, i);
+                    dataLine = "";
+                  }
+                  break;
+                }
+              }
+            }
           }
         }
       }
-      delay(1000); // Add a delay to debounce or prevent rapid execution
     }
   }
+
   else if (rotaryEncoder.readEncoder() == 3) // Settings
   {
     menuPage3();
