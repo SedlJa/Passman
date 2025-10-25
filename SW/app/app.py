@@ -1,7 +1,7 @@
 # pylint: disable=all
 
 import sys
-from PySide6 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore, QtGui
 from PySide6.QtWidgets import QApplication, QMainWindow
 from PySide6.QtSerialPort import QSerialPort, QSerialPortInfo
 from PySide6.QtCore import QIODevice
@@ -29,6 +29,11 @@ class MainWindow(QMainWindow):
         self.entryID = []
         self.entryUSRNAME = []
         self.entryPSW = []
+
+        # Set background color to dark blue
+        palette = self.palette()
+        palette.setColor(self.backgroundRole(), QtGui.QColor(16, 11, 79))  # RGB for darker blue
+        self.setPalette(palette)
         
     def initUI(self):
         # drop menu where available COM ports appears after search
@@ -84,6 +89,7 @@ class MainWindow(QMainWindow):
         # Edit button to edit password of entry
         self.editPasswordButton = QtWidgets.QPushButton(self)
         self.editPasswordButton.setText("Edit Password")
+
         self.editPasswordButton.clicked.connect(self.edit_password_entry)
         self.editPasswordButton.move(590, 215)
 
@@ -95,8 +101,15 @@ class MainWindow(QMainWindow):
 
         # List of database entries
         self.dbEntriesList = QtWidgets.QListWidget(self)
+        self.dbEntriesList.setStyleSheet("background-color: #040330; color: white;")
         self.dbEntriesList.setGeometry(45, 95, 535, 270)
         self.dbEntriesList.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+
+        # Labels for the entries list
+        self.idLabel = QtWidgets.QLabel(self)
+        self.idLabel.setText(" ID:   USERNAME: \t PASSWORD:")
+        self.idLabel.setStyleSheet("background-color: #040330; color: white; border-bottom: 1px solid white;")
+        self.idLabel.setGeometry(45, 75, 535, 20)
 
     def search_com_ports(self):
         self.comPortDropdown.clear()
@@ -162,7 +175,7 @@ class MainWindow(QMainWindow):
                             QtWidgets.QMessageBox.critical(self, "Decryption Error", f"Failed to decrypt data: {str(e)}")
                             continue
                         # Add entry to entries list
-                        self.dbEntriesList.addItem(f"{entryID}   {entryUSRNAME}\t\t{entryPSW}")
+                        self.dbEntriesList.addItem(f"{entryID}     {entryUSRNAME}\t{entryPSW}")
 
             except Exception as e:
                     QtWidgets.QMessageBox.critical(self, "Error", f"Failed to read data: {str(e)}")
@@ -221,7 +234,7 @@ class MainWindow(QMainWindow):
         self.entryPSW.append(password)
 
         # Add the new entry to the display
-        self.dbEntriesList.addItem(f"{entry_id}   {username}\t\t{password}")
+        self.dbEntriesList.addItem(f"{entry_id}      {username}\t\t{password}")
 
     def edit_username_entry(self):
         selected_item = self.dbEntriesList.currentItem()
@@ -290,7 +303,6 @@ class MainWindow(QMainWindow):
 def Window():
     app = QApplication(sys.argv)
     win = MainWindow()
-
 
     win.show()
     sys.exit(app. exec())
