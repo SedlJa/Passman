@@ -27,6 +27,8 @@ extern const unsigned char epd_bitmap_tick2[];
 extern const unsigned char epd_bitmap_tick3[];
 extern const unsigned char epd_bitmap_connected_to_app[];
 extern const unsigned char epd_bitmap_disconnected_from_app[];
+extern const unsigned char epd_bitmap_download[];
+extern const unsigned char epd_bitmap_upload[];
 
 /* Functions */
 void display_setup();
@@ -47,6 +49,8 @@ void connectingPage2();
 void connectingPage3();
 void connectedToApp();
 void disconnectedFromApp();
+void uploadPage();
+void downloadPage();
 
 /* Database */
 void databasePage(int dbEntry);

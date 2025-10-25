@@ -41,7 +41,7 @@ void loop()
   if (rotaryEncoder.readEncoder() == 1) // Database
   {
     menuPage1();
-    if (rotaryEncoder.isEncoderButtonClicked())
+    if (rotaryEncoder.isEncoderButtonClicked(300))
     {
       rotaryEncoder.setBoundaries(0, DB_LENGTH - 1, false); // update boundaries to db lenght
       rotaryEncoder.setEncoderValue(0);
@@ -57,25 +57,43 @@ void loop()
     menuPage2();
     if (rotaryEncoder.isEncoderButtonClicked())
     {
-      connectingPage3();
-
-      while (true)
+      rotaryEncoder.setBoundaries(1, 2, true); // Update boundaries
+      rotaryEncoder.setEncoderValue(1);        // set value to 1
+      // bool choose = false;
+      while (!rotaryEncoder.isEncoderButtonDown())
       {
-        if (Serial.available() > 0)
+        if (rotaryEncoder.readEncoder() == 1) // Upload database to app
         {
-          String message = Serial.readStringUntil('\n');
-          message.trim(); // Remove any trailing whitespace or newline characters
-          if (message == "load")
+          uploadPage();
+          if (rotaryEncoder.isEncoderButtonClicked())
           {
-            Serial.println("data");
-            Serial.println("1;username;password");
-            Serial.println("2;username;password");
-            Serial.println("3;username;password");
-            Serial.println("4;username;password");
-            break;
+            // Serial.println("Command: upload");
+            while (true)
+            {
+              if (Serial.available() > 0)
+              {
+                String message = Serial.readStringUntil('\n');
+                message.trim(); // Remove any trailing whitespace or newline characters
+                if (message == "load")
+                {
+                  Serial.println("data");
+                  Serial.println("id;username;password");
+                  break;
+                }
+              }
+            }
+          }
+        }
+        else // Download database from app
+        {
+          downloadPage();
+          if (rotaryEncoder.isEncoderButtonClicked())
+          {
+            Serial.println("Command: download");
           }
         }
       }
+      delay(1000); // Add a delay to debounce or prevent rapid execution
     }
   }
   else if (rotaryEncoder.readEncoder() == 3) // Settings

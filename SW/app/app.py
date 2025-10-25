@@ -5,8 +5,18 @@ from PySide6 import QtWidgets, QtCore
 from PySide6.QtWidgets import QApplication, QMainWindow
 from PySide6.QtSerialPort import QSerialPort, QSerialPortInfo
 from PySide6.QtCore import QIODevice
+import hashlib
 import serial.tools.list_ports
+from encryption import *
 
+# Load encryption key from a file
+key_file_path = "secret.key"
+with open(key_file_path, "rb") as key_file:
+    encryption_key = key_file.read().strip()
+
+# search for avalable serial ports
+available_ports = serial.tools.list_ports.comports()
+available_ports_list = [port.device for port in available_ports]
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -15,10 +25,11 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("PassMan Application")
         self.initUI()
         self.serial = QSerialPort(self)
+        # Decrypted database
         self.entryID = []
         self.entryUSRNAME = []
         self.entryPSW = []
-
+        
     def initUI(self):
         # drop menu where available COM ports appears after search
         self.comPortDropdown = QtWidgets.QComboBox(self)
@@ -29,6 +40,9 @@ class MainWindow(QMainWindow):
         self.searchCOMButton = QtWidgets.QPushButton(self)
         self.searchCOMButton.setText("Search COMs")
         self.searchCOMButton.clicked.connect(self.search_com_ports)
+        # Load avalable ports from the start of the application
+        for port in reversed(available_ports_list):
+            self.comPortDropdown.addItem(port)
         self.searchCOMButton.setGeometry(370, 30, 100, 30)
 
         # Connect button
@@ -124,11 +138,28 @@ class MainWindow(QMainWindow):
                 for line in lines:
                     parts = line.split(';')
                     if len(parts) == 3:
-                        entryID, entryUSRNAME, entryPSW = parts
-                        print(f"ID: {entryID}, Username: {entryUSRNAME}, Password: {entryPSW}")
-                        self.entryID.append(entryID)
-                        self.entryUSRNAME.append(entryUSRNAME)
-                        self.entryPSW.append(entryPSW)
+                        try:
+
+                            """# Decrypt the incoming data
+                            entryID = decrypt_data(parts[0], encryption_key)
+                            entryUSRNAME = decrypt_data(parts[1], encryption_key)
+                            entryPSW = decrypt_data(parts[2], encryption_key)
+                            print(f"Decrypted ID: {entryID}, Username: {entryUSRNAME}, Password: {entryPSW}")
+                            """
+                            # Use the incoming data as is (no decryption)
+                            entryID = parts[0].strip()
+                            entryUSRNAME = parts[1].strip()
+                            entryPSW = parts[2].strip()
+                            print(f"ID: {entryID}, Username: {entryUSRNAME}, Password: {entryPSW}")
+
+                            # Save decrypted entries to variables
+                            self.entryID.append(entryID)
+                            self.entryUSRNAME.append(entryUSRNAME)
+                            self.entryPSW.append(entryPSW)
+
+                        except Exception as e:
+                            QtWidgets.QMessageBox.critical(self, "Decryption Error", f"Failed to decrypt data: {str(e)}")
+                            continue
                         # Add entry to entries list
                         self.dbEntriesList.addItem(f"{entryID}   {entryUSRNAME}\t\t{entryPSW}")
 
