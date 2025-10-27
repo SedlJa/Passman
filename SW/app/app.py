@@ -8,6 +8,8 @@ from PySide6.QtCore import QIODevice
 import hashlib
 import serial.tools.list_ports
 from encryption import *
+import random
+import string
 
 # Load encryption key from a file
 key_file_path = "secret.key"
@@ -99,15 +101,26 @@ class MainWindow(QMainWindow):
         self.deleteEntryButton.clicked.connect(self.delete_entry)
         self.deleteEntryButton.move(590, 245)
 
+        # Generator button
+        self.generatorButton = QtWidgets.QPushButton(self)
+        self.generatorButton.setText("Generate PSW")
+        self.generatorButton.clicked.connect(self.generate_password)
+        self.generatorButton.move(590, 325)
+
         # List of database entries
         self.dbEntriesList = QtWidgets.QListWidget(self)
+        self.dbEntriesList.setStyleSheet("background-color: #040330; color: white;")
+        self.dbEntriesList.setGeometry(45, 95, 535, 270)
+        self.dbEntriesList.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+        # Set up columns for the entries list
+        self.dbEntriesList.setFont(QtGui.QFont("Courier", 11))  # Use a monospaced font for alignment
         self.dbEntriesList.setStyleSheet("background-color: #040330; color: white;")
         self.dbEntriesList.setGeometry(45, 95, 535, 270)
         self.dbEntriesList.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
 
         # Labels for the entries list
         self.idLabel = QtWidgets.QLabel(self)
-        self.idLabel.setText(" ID:   USERNAME: \t PASSWORD:")
+        self.idLabel.setText(" ID:\tUSERNAME:\t\t         PASSWORD:")
         self.idLabel.setStyleSheet("background-color: #040330; color: white; border-bottom: 1px solid white;")
         self.idLabel.setGeometry(45, 75, 535, 20)
 
@@ -141,7 +154,6 @@ class MainWindow(QMainWindow):
     
     def load_database(self):
         # load database method
-        print("Loading database...\n")
         self.serial.write(b"load\n")
 
         if self.serial.isOpen():
@@ -175,7 +187,7 @@ class MainWindow(QMainWindow):
                             QtWidgets.QMessageBox.critical(self, "Decryption Error", f"Failed to decrypt data: {str(e)}")
                             continue
                         # Add entry to entries list
-                        self.dbEntriesList.addItem(f"{entryID}     {entryUSRNAME}\t{entryPSW}")
+                        self.dbEntriesList.addItem(f"{entryID}     {entryUSRNAME}\t\t{entryPSW}")
 
             except Exception as e:
                     QtWidgets.QMessageBox.critical(self, "Error", f"Failed to read data: {str(e)}")
@@ -299,6 +311,35 @@ class MainWindow(QMainWindow):
             self.dbEntriesList.takeItem(entry_index)
         else:
             QtWidgets.QMessageBox.warning(self, "Warning", "No entry selected")
+
+    def generate_password(self):
+        while True:
+            # Generate a random password
+            length, ok = QtWidgets.QInputDialog.getInt(self, "Generate Password", "Enter password length:", 12, 8, 32)
+            if not ok:
+                return
+
+            characters = string.ascii_letters + string.digits + string.punctuation
+            password = ''.join(random.choice(characters) for _ in range(length))
+
+            # Ask user if they want to regenerate or copy to clipboard
+            msg_box = QtWidgets.QMessageBox(self)
+            msg_box.setWindowTitle("Generated Password")
+            msg_box.setText(f"Password: {password}")
+            msg_box.setInformativeText("Do you want to regenerate a new password or copy this one to clipboard?")
+            regenerate_button = msg_box.addButton("Regenerate", QtWidgets.QMessageBox.ActionRole)
+            copy_button = msg_box.addButton("Copy to Clipboard", QtWidgets.QMessageBox.ActionRole)
+            cancel_button = msg_box.addButton("Cancel", QtWidgets.QMessageBox.RejectRole)
+            msg_box.exec()
+
+            if msg_box.clickedButton() == regenerate_button:
+                continue
+            elif msg_box.clickedButton() == copy_button:
+                clipboard = QApplication.clipboard()
+                clipboard.setText(password)
+                break
+            else:
+                break
 
 def Window():
     app = QApplication(sys.argv)
