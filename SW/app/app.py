@@ -5,6 +5,7 @@ from PySide6 import QtWidgets, QtCore, QtGui
 from PySide6.QtWidgets import QApplication, QMainWindow
 from PySide6.QtSerialPort import QSerialPort, QSerialPortInfo
 from PySide6.QtCore import QIODevice
+from PySide6.QtGui import QIcon
 import hashlib
 import serial.tools.list_ports
 from encryption import *
@@ -25,6 +26,7 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         self.setGeometry(500, 350, 740, 400)
         self.setWindowTitle("PassMan Application")
+        self.setWindowIcon(QtGui.QIcon("img/blueSafe.png"))
         self.initUI()
         self.serial = QSerialPort(self)
         # Decrypted database
