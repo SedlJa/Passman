@@ -20,7 +20,7 @@ void loadDatabase()
 /**
  * @brief function to handle incomming serial port communication
  */
-void parseAndStoreData(String data)
+void parseAndStoreData(String data, int pos)
 {
     int firstDelimiter = data.indexOf(';');
     int secondDelimiter = data.lastIndexOf(';');
@@ -33,16 +33,15 @@ void parseAndStoreData(String data)
     }
 
     // Extract ID
-    db.id[0] = data.substring(0, firstDelimiter);
+    db.id[pos] = data.substring(0, firstDelimiter);
     // Extract Username
-    db.username[0] = data.substring(firstDelimiter + 1, secondDelimiter);
+    db.username[pos] = data.substring(firstDelimiter + 1, secondDelimiter);
     // Extract Password
-    db.password[0] = data.substring(secondDelimiter + 1);
+    db.password[pos] = data.substring(secondDelimiter + 1);
 }
 
-void readSerialData(String receivedData, bool status)
+void readSerialData(String receivedData, bool status, int pos)
 {
-    Serial.println("Enter credentials:");
     while (!status)
     {
         if (Serial.available())
@@ -56,7 +55,7 @@ void readSerialData(String receivedData, bool status)
         }
     }
     receivedData.trim(); // Remove any trailing newline or spaces
-    parseAndStoreData(receivedData);
+    parseAndStoreData(receivedData, pos);
     receivedData = "";
     status = false;
 }

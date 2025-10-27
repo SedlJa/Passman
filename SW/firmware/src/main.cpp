@@ -13,7 +13,7 @@ String receivedData = " ";
 
 void setup()
 {
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   /* Rotary encoder init */
   rotary_setup();
@@ -41,7 +41,7 @@ void loop()
   if (rotaryEncoder.readEncoder() == 1) // Database
   {
     menuPage1();
-    if (rotaryEncoder.isEncoderButtonClicked())
+    if (rotaryEncoder.isEncoderButtonClicked(300))
     {
       rotaryEncoder.setBoundaries(0, DB_LENGTH - 1, false); // update boundaries to db lenght
       rotaryEncoder.setEncoderValue(0);
@@ -57,10 +57,67 @@ void loop()
     menuPage2();
     if (rotaryEncoder.isEncoderButtonClicked())
     {
-      connectingPage3();
-      readSerialData(receivedData, stringComplete);
+      rotaryEncoder.setBoundaries(1, 2, true); // Update boundaries
+      rotaryEncoder.setEncoderValue(1);        // set value to 1
+      // bool choose = false;
+      while (!rotaryEncoder.isEncoderButtonDown())
+      {
+        if (rotaryEncoder.readEncoder() == 1) // Upload database to app
+        {
+          uploadPage();
+          if (rotaryEncoder.isEncoderButtonClicked())
+          {
+            // Serial.println("Command: upload");
+            while (true)
+            {
+              if (Serial.available() > 0)
+              {
+                String message = Serial.readStringUntil('\n');
+                message.trim(); // Remove any trailing whitespace or newline characters
+                if (message == "load")
+                {
+                  Serial.println("data");
+                  Serial.println("id;username;password");
+                  break;
+                }
+              }
+            }
+          }
+        }
+        else if (rotaryEncoder.readEncoder() == 2) // Download database from app
+        {
+          downloadPage();
+          if (rotaryEncoder.isEncoderButtonClicked())
+          {
+            while (true)
+            {
+              if (Serial.available() > 0)
+              {
+                String message = Serial.readStringUntil('\n');
+                message.trim(); // Remove any trailing whitespace or newline characters
+                if (message == "download")
+                {
+                  for (int i = 0; i < 3; i++)
+                  {
+                    while (Serial.available() == 0)
+                    {
+                      // Wait for data
+                    }
+                    String dataLine = Serial.readStringUntil('\n');
+                    dataLine.trim(); // Remove any trailing whitespace or newline characters
+                    parseAndStoreData(dataLine, i);
+                    dataLine = "";
+                  }
+                  break;
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
+
   else if (rotaryEncoder.readEncoder() == 3) // Settings
   {
     menuPage3();
