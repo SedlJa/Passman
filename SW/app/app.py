@@ -29,6 +29,7 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(QtGui.QIcon("img/blueSafe.png"))
         self.initUI()
         self.serial = QSerialPort(self)
+        self.deviceConnected = False
         # Decrypted database
         self.entryID = []
         self.entryUSRNAME = []
@@ -141,6 +142,8 @@ class MainWindow(QMainWindow):
             self.serial.setParity(QSerialPort.NoParity)
             self.serial.setStopBits(QSerialPort.OneStop)
             self.serial.setFlowControl(QSerialPort.NoFlowControl)
+            # Device connection handler
+            self.deviceConnected = True
 
             if self.serial.open(QIODevice.OpenModeFlag.ReadWrite):
                 QtWidgets.QMessageBox.information(self, "Connection", f"Connected to {selected_port}")
@@ -149,6 +152,14 @@ class MainWindow(QMainWindow):
 
     def disconnect_from_port(self):
         if self.serial.isOpen():
+            # Clear database for enhanced security, while device is disconnected
+            self.entryID.clear()
+            self.entryUSRNAME.clear()
+            self.entryPSW.clear()
+            self.dbEntriesList.clear()
+            # Device connection handler
+            self.deviceConnected = False
+            # Close serial
             self.serial.close()
             QtWidgets.QMessageBox.information(self, "Disconnection", "Disconnected from the serial port")
         else:
@@ -167,13 +178,6 @@ class MainWindow(QMainWindow):
                     parts = line.split(';')
                     if len(parts) == 3:
                         try:
-
-                            """# Decrypt the incoming data
-                            entryID = decrypt_data(parts[0], encryption_key)
-                            entryUSRNAME = decrypt_data(parts[1], encryption_key)
-                            entryPSW = decrypt_data(parts[2], encryption_key)
-                            print(f"Decrypted ID: {entryID}, Username: {entryUSRNAME}, Password: {entryPSW}")
-                            """
                             # Use the incoming data as is (no decryption)
                             entryID = parts[0].strip()
                             entryUSRNAME = parts[1].strip()
@@ -189,7 +193,7 @@ class MainWindow(QMainWindow):
                             QtWidgets.QMessageBox.critical(self, "Decryption Error", f"Failed to decrypt data: {str(e)}")
                             continue
                         # Add entry to entries list
-                        self.dbEntriesList.addItem(f"{entryID}     {entryUSRNAME}\t\t{entryPSW}")
+                        self.dbEntriesList.addItem(f"{entryID}      {entryUSRNAME}\t\t{entryPSW}")
 
             except Exception as e:
                     QtWidgets.QMessageBox.critical(self, "Error", f"Failed to read data: {str(e)}")
@@ -220,28 +224,31 @@ class MainWindow(QMainWindow):
             QtWidgets.QMessageBox.warning(self, "Warning", "Serial port is not open")
 
     def add_entry(self):
-        # Prompt user for entry details
-        entry_id, ok1 = QtWidgets.QInputDialog.getText(self, "Add Entry", "Enter Entry ID:")
-        if not ok1 or not entry_id.strip():
-            QtWidgets.QMessageBox.warning(self, "Warning", "Wrong input")
-            return
-        if not entry_id.isdigit():
-            QtWidgets.QMessageBox.warning(self, "Warning", "ID is not a number")
-            return
-        if entry_id in self.entryID:
-            QtWidgets.QMessageBox.warning(self, "Warning", "ID must be unique")
-            return
+        if(self.deviceConnected):
+            # Prompt user for entry details
+            entry_id, ok1 = QtWidgets.QInputDialog.getText(self, "Add Entry", "Enter Entry ID:")
+            if not ok1 or not entry_id.strip():
+                QtWidgets.QMessageBox.warning(self, "Warning", "Wrong input")
+                return
+            if not entry_id.isdigit():
+                QtWidgets.QMessageBox.warning(self, "Warning", "ID is not a number")
+                return
+            if entry_id in self.entryID:
+                QtWidgets.QMessageBox.warning(self, "Warning", "ID must be unique")
+                return
 
-        username, ok2 = QtWidgets.QInputDialog.getText(self, "Add Entry", "Enter Username:")
-        if not ok2 or not username.strip():
-            QtWidgets.QMessageBox.warning(self, "Warning", "Wrong input")
-            return
+            username, ok2 = QtWidgets.QInputDialog.getText(self, "Add Entry", "Enter Username:")
+            if not ok2 or not username.strip():
+                QtWidgets.QMessageBox.warning(self, "Warning", "Wrong input")
+                return
 
-        password, ok3 = QtWidgets.QInputDialog.getText(self, "Add Entry", "Enter Password:")
-        if not ok3 or not password.strip():
-            QtWidgets.QMessageBox.warning(self, "Warning", "Wrong input")
+            password, ok3 = QtWidgets.QInputDialog.getText(self, "Add Entry", "Enter Password:")
+            if not ok3 or not password.strip():
+                QtWidgets.QMessageBox.warning(self, "Warning", "Wrong input")
+                return
+        else:
+            QtWidgets.QMessageBox.warning(self, "Error", "No device connected")
             return
-
         # Append the new entry to the lists
         self.entryID.append(entry_id)
         self.entryUSRNAME.append(username)

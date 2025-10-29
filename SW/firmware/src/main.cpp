@@ -97,7 +97,7 @@ void loop()
                 message.trim(); // Remove any trailing whitespace or newline characters
                 if (message == "download")
                 {
-                  for (int i = 0; i < 3; i++)
+                  for (int i = 0; i < 4; i++)
                   {
                     while (Serial.available() == 0)
                     {
