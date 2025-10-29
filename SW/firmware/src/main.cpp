@@ -3,6 +3,7 @@
 #include "oled.h"
 #include "fpcheck.h"
 #include "database.h"
+#include "encryption.h"
 
 /* Global variables */
 int unlockHandler = 0;          // Handles authentication
@@ -32,6 +33,29 @@ void setup()
 
   // Reserve memory for the String to reduce memory fragmentation
   receivedData.reserve(200);
+
+  String plainText = "Hello from ESP32";
+  // Encrypt the data
+  std::vector<uint8_t> encrypted_payload = encrypt_data(plainText.c_str());
+
+  if (!encrypted_payload.empty())
+  {
+    // 1. Convert the final IV + Ciphertext payload to Base64 for clean transmission
+    size_t output_len;
+    mbedtls_base64_encode(NULL, 0, &output_len, encrypted_payload.data(), encrypted_payload.size());
+    std::vector<unsigned char> base64_buf(output_len);
+    mbedtls_base64_encode(base64_buf.data(), base64_buf.size(), &output_len, encrypted_payload.data(), encrypted_payload.size());
+
+    String base64_output = (char *)base64_buf.data();
+
+    Serial.printf("Original Plaintext: %s\n", plainText.c_str());
+    Serial.printf("Encrypted (Base64 for TX): %s\n", base64_output.c_str());
+    // Send 'base64_output' over your communication channel (Wi-Fi, Serial, etc.)
+  }
+  else
+  {
+    Serial.println("Encryption failed!");
+  }
 }
 
 void loop()

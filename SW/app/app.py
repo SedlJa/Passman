@@ -202,7 +202,7 @@ class MainWindow(QMainWindow):
 
     def upload_database(self):
         self.serial.write(b"download\n")
-
+        
         if(self.serial.isOpen()):
             try:
                 # Prepare the database content
