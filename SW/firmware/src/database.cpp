@@ -13,8 +13,19 @@ void loadDatabase()
         /* code */
         db.id[i] = i + 1;
     }
+
+    // Initial values of database - for prototyping only !!!
     db.username[0] = "uzivatel 1";
     db.password[0] = "superHesl0";
+
+    db.username[1] = "uzivatel 2";
+    db.password[1] = "heslo123";
+
+    db.username[2] = "uzivatel 3";
+    db.password[2] = "tajneHeslo";
+
+    db.username[3] = "uzivatel 4";
+    db.password[3] = "mojeHeslo";
 }
 
 /**

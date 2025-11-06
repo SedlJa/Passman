@@ -30,15 +30,6 @@ void setup()
 
   /* database init */
   loadDatabase();
-
-  // Reserve memory for the String to reduce memory fragmentation
-  receivedData.reserve(200);
-
-  String plainTextID = db.id[0];
-  String plainTextUsername = db.username[0];
-  String plainTextPassword = db.password[0];
-  // Encrypt the data
-  Serial.printf("Encrypted (Base64 for TX): %s\n", encrypt_data(plainTextUsername.c_str()).c_str());
 }
 
 void loop()
@@ -84,7 +75,10 @@ void loop()
                 if (message == "load")
                 {
                   Serial.println("data");
-                  Serial.printf("%s;%s;%s\n", encrypt_data(db.id[0].c_str()).c_str(), encrypt_data(db.username[0].c_str()).c_str(), encrypt_data(db.password[0].c_str()).c_str());
+                  for (int i = 0; i < DB_LENGTH; i++)
+                  {
+                    Serial.printf("%s;%s;%s\n", encrypt_data(db.id[i].c_str()).c_str(), encrypt_data(db.username[i].c_str()).c_str(), encrypt_data(db.password[i].c_str()).c_str());
+                  }
                   break;
                 }
               }
@@ -104,7 +98,7 @@ void loop()
                 message.trim(); // Remove any trailing whitespace or newline characters
                 if (message == "download")
                 {
-                  for (int i = 0; i < 4; i++)
+                  for (int i = 0; i < 6; i++)
                   {
                     while (Serial.available() == 0)
                     {
