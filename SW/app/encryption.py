@@ -8,6 +8,7 @@ import base64
 # 16 bytes for AES-128
 SECRET_KEY = b'MySecretKey12345'
 
+
 def decrypt_data(encrypted_data_b64):
     """
         Decrypt encrypted data in base64 format
@@ -67,3 +68,6 @@ plaintext_to_send = "1;sedlaj51;silneHeslo"
 encrypted_to_send = encrypt_data(plaintext_to_send)
 print(f"Plaintext: {plaintext_to_send}")
 print(f"Encrypted (Base64): {encrypted_to_send}")
+print("\n--- Python Decryption (received from ESP32) ---")
+decrypted_received = decrypt_data(b"Lc9GKQS0eNhop/8/K/H82Yl8KAzYKjNGMz27u9y8b+o=")
+print(f"Decrypted Plaintext: {decrypted_received}")

@@ -4,7 +4,7 @@
 /* Defines */
 
 /* Functions */
-std::vector<uint8_t> encrypt_data(const char *plaintext)
+std::vector<uint8_t> get_encrypted_vector(const char *plaintext)
 {
     mbedtls_aes_context aes_ctx;
     size_t plaintext_len = strlen(plaintext);
@@ -52,4 +52,25 @@ std::vector<uint8_t> encrypt_data(const char *plaintext)
     final_payload.insert(final_payload.end(), ciphertext.begin(), ciphertext.end()); // Add Ciphertext
 
     return final_payload;
+}
+
+String encrypt_data(const char *plainTextID)
+{
+    std::vector<uint8_t> encrypted_payload = get_encrypted_vector(plainTextID);
+
+    if (!encrypted_payload.empty())
+    {
+        // Convert the final IV + Ciphertext payload to Base64
+        size_t output_len;
+        mbedtls_base64_encode(NULL, 0, &output_len, encrypted_payload.data(), encrypted_payload.size());
+        std::vector<unsigned char> base64_buf(output_len);
+        mbedtls_base64_encode(base64_buf.data(), base64_buf.size(), &output_len, encrypted_payload.data(), encrypted_payload.size());
+
+        return String((char *)base64_buf.data());
+    }
+    else
+    {
+        Serial.println("Encryption failed!");
+        return String();
+    }
 }

@@ -34,14 +34,16 @@ class MainWindow(QMainWindow):
         self.entryID = []
         self.entryUSRNAME = []
         self.entryPSW = []
-
+        
         # Set background color to dark blue
         palette = self.palette()
         palette.setColor(self.backgroundRole(), QtGui.QColor(16, 11, 79))  # RGB for darker blue
         self.setPalette(palette)
         
     def initUI(self):
-        # drop menu where available COM ports appears after search
+        """
+            Initialization UI
+        """
         self.comPortDropdown = QtWidgets.QComboBox(self)
         self.comPortDropdown.setGeometry(45, 32, 310, 30)
         self.comPortDropdown.clear()
@@ -128,12 +130,18 @@ class MainWindow(QMainWindow):
         self.idLabel.setGeometry(45, 75, 535, 20)
 
     def search_com_ports(self):
+        """
+            Search for available ports
+        """
         self.comPortDropdown.clear()
         ports = serial.tools.list_ports.comports()
         for port in ports:
             self.comPortDropdown.addItem(port.device)
 
     def connect_to_port(self):
+        """
+            Connect app to serial port
+        """
         selected_port = self.comPortDropdown.currentText()
         if selected_port:
             self.serial.setPortName(selected_port)
@@ -151,6 +159,9 @@ class MainWindow(QMainWindow):
                 QtWidgets.QMessageBox.critical(self, "Error", f"Failed to connect to {selected_port}")
 
     def disconnect_from_port(self):
+        """
+            Disconnect app from serial port
+        """
         if self.serial.isOpen():
             # Clear database for enhanced security, while device is disconnected
             self.entryID.clear()
@@ -166,7 +177,10 @@ class MainWindow(QMainWindow):
             QtWidgets.QMessageBox.warning(self, "Warning", "Serial port is not open")
     
     def load_database(self):
-        # load database method
+        """
+            Load database from PassMan device
+            Each entry is loaded encrypted - decrpytion is a part of this function
+        """
         self.serial.write(b"load\n")
 
         if self.serial.isOpen():
@@ -182,7 +196,12 @@ class MainWindow(QMainWindow):
                             entryID = parts[0].strip()
                             entryUSRNAME = parts[1].strip()
                             entryPSW = parts[2].strip()
-                            print(f"ID: {entryID}, Username: {entryUSRNAME}, Password: {entryPSW}")
+                            #print(f"ID: {entryID}, Username: {entryUSRNAME}, Password: {entryPSW}")
+
+                            # Decode the base64-encoded strings and decrypt them
+                            entryID = decrypt_data((entryID))
+                            entryUSRNAME = decrypt_data((entryUSRNAME))
+                            entryPSW = decrypt_data((entryPSW))
 
                             # Save decrypted entries to variables
                             self.entryID.append(entryID)
@@ -201,6 +220,9 @@ class MainWindow(QMainWindow):
             QtWidgets.QMessageBox.warning(self, "Warning", "Serial port is not open")
 
     def upload_database(self):
+        """
+            Function to upload password database to a PassMan device
+        """
         self.serial.write(b"download\n")
         
         if(self.serial.isOpen()):
@@ -209,11 +231,11 @@ class MainWindow(QMainWindow):
                 if not self.entryID:
                     QtWidgets.QMessageBox.warning(self, "Warning", "Database is empty")
                     return
-
+                
                 database_content = ""
                 for i in range(len(self.entryID)):
-                    database_content += f"{self.entryID[i]};{self.entryUSRNAME[i]};{self.entryPSW[i]}\n"
-
+                    database_content += f"{encrypt_data(self.entryID[i])};{encrypt_data(self.entryUSRNAME[i])};{encrypt_data(self.entryPSW[i])}\n"
+                    
                 # Send the database content over the serial port
                 self.serial.write(database_content.encode('utf-8'))
                 print(database_content)
@@ -224,6 +246,9 @@ class MainWindow(QMainWindow):
             QtWidgets.QMessageBox.warning(self, "Warning", "Serial port is not open")
 
     def add_entry(self):
+        """
+            Add password to app database
+        """
         if(self.deviceConnected):
             # Prompt user for entry details
             entry_id, ok1 = QtWidgets.QInputDialog.getText(self, "Add Entry", "Enter Entry ID:")
@@ -258,6 +283,9 @@ class MainWindow(QMainWindow):
         self.dbEntriesList.addItem(f"{entry_id}      {username}\t\t{password}")
 
     def edit_username_entry(self):
+        """
+            Edit username entry
+        """
         selected_item = self.dbEntriesList.currentItem()
         if selected_item:
             selected_text = selected_item.text()
@@ -283,6 +311,9 @@ class MainWindow(QMainWindow):
             QtWidgets.QMessageBox.warning(self, "Warning", "No entry selected")
 
     def edit_password_entry(self):
+        """
+            Edit password of entry
+        """
         selected_item = self.dbEntriesList.currentItem()
         if selected_item:
             selected_text = selected_item.text()
@@ -307,6 +338,9 @@ class MainWindow(QMainWindow):
         else:
             QtWidgets.QMessageBox.warning(self, "Warning", "No entry selected")
     def delete_entry(self):
+        """
+            Delete entry
+        """
         selected_item = self.dbEntriesList.currentItem()
         if selected_item:
             entry_index = self.dbEntriesList.currentRow()
@@ -322,6 +356,9 @@ class MainWindow(QMainWindow):
             QtWidgets.QMessageBox.warning(self, "Warning", "No entry selected")
 
     def generate_password(self):
+        """
+            Generate random password
+        """
         while True:
             # Generate a random password
             length, ok = QtWidgets.QInputDialog.getInt(self, "Generate Password", "Enter password length:", 12, 8, 32)

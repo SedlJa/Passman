@@ -34,28 +34,11 @@ void setup()
   // Reserve memory for the String to reduce memory fragmentation
   receivedData.reserve(200);
 
-  String plainText = "Hello from ESP32";
+  String plainTextID = db.id[0];
+  String plainTextUsername = db.username[0];
+  String plainTextPassword = db.password[0];
   // Encrypt the data
-  std::vector<uint8_t> encrypted_payload = encrypt_data(plainText.c_str());
-
-  if (!encrypted_payload.empty())
-  {
-    // 1. Convert the final IV + Ciphertext payload to Base64 for clean transmission
-    size_t output_len;
-    mbedtls_base64_encode(NULL, 0, &output_len, encrypted_payload.data(), encrypted_payload.size());
-    std::vector<unsigned char> base64_buf(output_len);
-    mbedtls_base64_encode(base64_buf.data(), base64_buf.size(), &output_len, encrypted_payload.data(), encrypted_payload.size());
-
-    String base64_output = (char *)base64_buf.data();
-
-    Serial.printf("Original Plaintext: %s\n", plainText.c_str());
-    Serial.printf("Encrypted (Base64 for TX): %s\n", base64_output.c_str());
-    // Send 'base64_output' over your communication channel (Wi-Fi, Serial, etc.)
-  }
-  else
-  {
-    Serial.println("Encryption failed!");
-  }
+  Serial.printf("Encrypted (Base64 for TX): %s\n", encrypt_data(plainTextUsername.c_str()).c_str());
 }
 
 void loop()
@@ -101,7 +84,7 @@ void loop()
                 if (message == "load")
                 {
                   Serial.println("data");
-                  Serial.println("id;username;password");
+                  Serial.printf("%s;%s;%s\n", encrypt_data(db.id[0].c_str()).c_str(), encrypt_data(db.username[0].c_str()).c_str(), encrypt_data(db.password[0].c_str()).c_str());
                   break;
                 }
               }
