@@ -240,8 +240,7 @@ class MainWindow(QMainWindow):
                 
                 database_content = ""
                 for i in range(len(self.entryID)):
-                    #database_content += f"{encrypt_data(self.entryID[i])};{encrypt_data(self.entryUSRNAME[i])};{encrypt_data(self.entryPSW[i])}\n"
-                    database_content += f"{self.entryID[i]};{self.entryUSRNAME[i]};{self.entryPSW[i]}\n"
+                    database_content += f"{encrypt_data(self.entryID[i])};{encrypt_data(self.entryUSRNAME[i])};{encrypt_data(self.entryPSW[i])}\n"
                     
                 # Send the database content over the serial port
                 self.serial.write(database_content.encode('utf-8'))

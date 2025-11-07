@@ -43,12 +43,17 @@ void parseAndStoreData(String data, int pos)
         return;
     }
 
+    // Decrypt data
+    const String decryptedID = decrypt_data(data.substring(0, firstDelimiter));
+    const String decryptedUsername = decrypt_data(data.substring(firstDelimiter + 1, secondDelimiter));
+    const String decryptedPassword = decrypt_data(data.substring(secondDelimiter + 1));
+
     // Extract ID
-    db.id[pos] = data.substring(0, firstDelimiter);
+    db.id[pos] = decryptedID;
     // Extract Username
-    db.username[pos] = data.substring(firstDelimiter + 1, secondDelimiter);
+    db.username[pos] = decryptedUsername;
     // Extract Password
-    db.password[pos] = data.substring(secondDelimiter + 1);
+    db.password[pos] = decryptedPassword;
 }
 
 void readSerialData(String receivedData, bool status, int pos)

@@ -6,8 +6,7 @@ import base64
 # --- Shared Secret Key ---
 # Must be identical on both the ESP32 and Python app.
 # 16 bytes for AES-128
-SECRET_KEY = b'MySecretKey12345'
-
+SECRET_KEY = b'AbcCYr9RLcXtO86P'
 
 def decrypt_data(encrypted_data_b64):
     """
@@ -69,5 +68,5 @@ encrypted_to_send = encrypt_data(plaintext_to_send)
 print(f"Plaintext: {plaintext_to_send}")
 print(f"Encrypted (Base64): {encrypted_to_send}")
 print("\n--- Python Decryption (received from ESP32) ---")
-decrypted_received = decrypt_data(b"Lc9GKQS0eNhop/8/K/H82Yl8KAzYKjNGMz27u9y8b+o=")
-print(f"Decrypted Plaintext: {decrypted_received}")
+#decrypted_received = decrypt_data(b"Lc9GKQS0eNhop/8/K/H82Yl8KAzYKjNGMz27u9y8b+o=")
+#print(f"Decrypted Plaintext: {decrypted_received}")

@@ -30,6 +30,24 @@ void setup()
 
   /* database init */
   loadDatabase();
+
+  // This is the Base64 string from the Python encryption example: "ACK_OK"
+  const String encrypted_from_python = "Lc9GKQS0eNhop/8/K/H82Yl8KAzYKjNGMz27u9y8b+o=";
+  Serial.print("Encrypted (Base64 from Python): ");
+  Serial.println(encrypted_from_python);
+
+  String decrypted_message = decrypt_data(encrypted_from_python);
+
+  if (decrypted_message.length() > 0)
+  {
+    Serial.print("\n**Decrypted (ESP32 String): ");
+    Serial.print(decrypted_message);
+    Serial.println("**");
+  }
+  else
+  {
+    Serial.println("\nDecryption failed.");
+  }
 }
 
 void loop()
@@ -105,8 +123,8 @@ void loop()
                       // Wait for data
                     }
                     String dataLine = Serial.readStringUntil('\n');
-                    dataLine.trim(); // Remove any trailing whitespace or newline characters
-                    parseAndStoreData(dataLine, i);
+                    dataLine.trim();                // Remove any trailing whitespace or newline characters
+                    parseAndStoreData(dataLine, i); // data are being decrypted in this function
                     dataLine = "";
                   }
                   break;

@@ -11,7 +11,7 @@
 /* Defines */
 
 /* Variables */
-const char SECRET_KEY[] = "MySecretKey12345";
+const char SECRET_KEY[] = "AbcCYr9RLcXtO86P";
 const char AES_BLOCK_SIZE = 16;
 const size_t KEY_BITS = 128;
 

@@ -3,6 +3,7 @@
 #include <WString.h>
 #include <vector>
 #include <Arduino.h>
+#include "encryption.h"
 
 #define DB_LENGTH 10
 
