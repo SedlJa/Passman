@@ -12,10 +12,6 @@ from encryption import *
 import random
 import string
 
-# Load encryption key from a file
-key_file_path = "secret.key"
-with open(key_file_path, "rb") as key_file:
-    encryption_key = key_file.read().strip()
 
 # search for avalable serial ports
 available_ports = serial.tools.list_ports.comports()
@@ -112,28 +108,52 @@ class MainWindow(QMainWindow):
         self.deleteDBButton.clicked.connect(self.delete_database)
         self.deleteDBButton.move(590, 275)
 
+        # Toggle button - password visibility
+        self.togglePasswordButton = QtWidgets.QPushButton(self)
+        self.togglePasswordButton.setText("PSW Visibility")
+        self.togglePasswordButton.clicked.connect(self.toggle_password_visibility)
+        self.togglePasswordButton.move(590, 305)
+
         # Generator button
         self.generatorButton = QtWidgets.QPushButton(self)
         self.generatorButton.setText("Generate PSW")
         self.generatorButton.clicked.connect(self.generate_password)
-        self.generatorButton.move(590, 325)
+        self.generatorButton.move(590, 335)
 
-        # List of database entries
-        self.dbEntriesList = QtWidgets.QListWidget(self)
-        self.dbEntriesList.setStyleSheet("background-color: #040330; color: white;")
-        self.dbEntriesList.setGeometry(45, 95, 535, 270)
-        self.dbEntriesList.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
-        # Set up columns for the entries list
-        self.dbEntriesList.setFont(QtGui.QFont("Courier", 11))  # Use a monospaced font for alignment
-        self.dbEntriesList.setStyleSheet("background-color: #040330; color: white;")
-        self.dbEntriesList.setGeometry(45, 95, 535, 270)
-        self.dbEntriesList.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+        # Lists for database entries
+        self.idList = QtWidgets.QListWidget(self)
+        self.idList.setStyleSheet("background-color: #040330; color: white;")
+        self.idList.setGeometry(45, 95, 100, 270)
+        self.idList.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+        self.idList.setFont(QtGui.QFont("Courier", 11))  # Use a monospaced font for alignment
+
+        self.usernameList = QtWidgets.QListWidget(self)
+        self.usernameList.setStyleSheet("background-color: #040330; color: white;")
+        self.usernameList.setGeometry(150, 95, 200, 270)
+        self.usernameList.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+        self.usernameList.setFont(QtGui.QFont("Courier", 11))  # Use a monospaced font for alignment
+
+        self.passwordList = QtWidgets.QListWidget(self)
+        self.passwordList.setStyleSheet("background-color: #040330; color: white;")
+        self.passwordList.setGeometry(355, 95, 225, 270)
+        self.passwordList.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+        self.passwordList.setFont(QtGui.QFont("Courier", 11))  # Use a monospaced font for alignment
 
         # Labels for the entries list
         self.idLabel = QtWidgets.QLabel(self)
-        self.idLabel.setText(" ID:\tUSERNAME:\t\t         PASSWORD:")
+        self.idLabel.setText("ID:")
         self.idLabel.setStyleSheet("background-color: #040330; color: white; border-bottom: 1px solid white;")
-        self.idLabel.setGeometry(45, 75, 535, 20)
+        self.idLabel.setGeometry(45, 75, 100, 20)
+
+        self.usernameLabel = QtWidgets.QLabel(self)
+        self.usernameLabel.setText("USERNAME:")
+        self.usernameLabel.setStyleSheet("background-color: #040330; color: white; border-bottom: 1px solid white;")
+        self.usernameLabel.setGeometry(150, 75, 200, 20)
+
+        self.passwordLabel = QtWidgets.QLabel(self)
+        self.passwordLabel.setText("PASSWORD:")
+        self.passwordLabel.setStyleSheet("background-color: #040330; color: white; border-bottom: 1px solid white;")
+        self.passwordLabel.setGeometry(355, 75, 225, 20)
 
     def search_com_ports(self):
         """
@@ -173,7 +193,9 @@ class MainWindow(QMainWindow):
             self.entryID.clear()
             self.entryUSRNAME.clear()
             self.entryPSW.clear()
-            self.dbEntriesList.clear()
+            self.idList.clear()
+            self.usernameList.clear()
+            self.passwordList.clear()
             # Device connection handler
             self.deviceConnected = False
             # Close serial
@@ -217,8 +239,11 @@ class MainWindow(QMainWindow):
                         except Exception as e:
                             QtWidgets.QMessageBox.critical(self, "Decryption Error", f"Failed to decrypt data: {str(e)}")
                             continue
-                        # Add entry to entries list
-                        self.dbEntriesList.addItem(f"{entryID}      {entryUSRNAME}\t\t{entryPSW}")
+
+                        # Add each part of the entry to the respective list
+                        self.idList.addItem(entryID)
+                        self.usernameList.addItem(entryUSRNAME)
+                        self.passwordList.addItem(entryPSW)
 
             except Exception as e:
                     QtWidgets.QMessageBox.critical(self, "Error", f"Failed to read data: {str(e)}")
@@ -307,13 +332,15 @@ class MainWindow(QMainWindow):
                     QtWidgets.QMessageBox.warning(self, "Warning", "Password cannot be empty")
                     return
 
-                # Append the new entry to the lists
+                # Add each part to entry list
                 self.entryID.append(entry_id)
                 self.entryUSRNAME.append(username)
                 self.entryPSW.append(password)
 
-                # Add the new entry to the display
-                self.dbEntriesList.addItem(f"{entry_id}      {username}\t\t{password}")
+                # Add each part of the entry to the respective list
+                self.idList.addItem(entry_id)
+                self.usernameList.addItem(username)
+                self.passwordList.addItem(password)
 
                 dialog.accept()
 
@@ -328,27 +355,23 @@ class MainWindow(QMainWindow):
         """
             Edit username entry
         """
-        selected_item = self.dbEntriesList.currentItem()
+        selected_item = self.usernameList.currentItem()
         if selected_item:
-            selected_text = selected_item.text()
-            parts = selected_text.split()
-            if len(parts) >= 3:
-                entry_index = self.dbEntriesList.currentRow()
-                entryID = self.entryID[entry_index]
-                entryPSW = self.entryPSW[entry_index]
+            entry_index = self.usernameList.currentRow()
 
-                # Prompt user for new username and password
-                new_username, ok1 = QtWidgets.QInputDialog.getText(self, "Edit Username", "Enter new username:")
-                if not ok1:
-                    return
-                if not new_username.strip():
-                    new_username = "-" # In case user only clicks OK
+            # Prompt user for new username
+            new_username, ok = QtWidgets.QInputDialog.getText(self, "Edit Username", "Enter new username:")
+            if not ok:
+                return
+            if not new_username.strip():
+                QtWidgets.QMessageBox.warning(self, "Warning", "Username cannot be empty")
+                return
 
             # Update the entry in the lists
             self.entryUSRNAME[entry_index] = new_username
 
             # Update the display
-            self.dbEntriesList.item(entry_index).setText(f"{entryID}   {new_username}\t\t{entryPSW}")
+            self.usernameList.item(entry_index).setText(new_username)
         else:
             QtWidgets.QMessageBox.warning(self, "Warning", "No entry selected")
 
@@ -356,27 +379,23 @@ class MainWindow(QMainWindow):
         """
             Edit password of entry
         """
-        selected_item = self.dbEntriesList.currentItem()
+        selected_item = self.passwordList.currentItem()
         if selected_item:
-            selected_text = selected_item.text()
-            parts = selected_text.split()
-            if len(parts) >=3:
-                entry_index = self.dbEntriesList.currentRow()
-                entryID = self.entryID[entry_index]
-                entryUSRNAME = self.entryUSRNAME[entry_index]
+            entry_index = self.passwordList.currentRow()
 
-                # Prompt user for new password
-                new_password, ok2 = QtWidgets.QInputDialog.getText(self, "Edit Password", "Enter new password:")
-                if not ok2:
-                    return
-                if not new_password.strip():
-                    new_password = "-"  # In case user only clicks OK
+            # Prompt user for new password
+            new_password, ok = QtWidgets.QInputDialog.getText(self, "Edit Password", "Enter new password:")
+            if not ok:
+                return
+            if not new_password.strip():
+                QtWidgets.QMessageBox.warning(self, "Warning", "Password cannot be empty")
+                return
 
-                # Update the entry in the lists
-                self.entryPSW[entry_index] = new_password
+            # Update the entry in the lists
+            self.entryPSW[entry_index] = new_password
 
-                # Update the display
-                self.dbEntriesList.item(entry_index).setText(f"{entryID}   {entryUSRNAME}\t\t{new_password}")
+            # Update the display
+            self.passwordList.item(entry_index).setText(new_password)
         else:
             QtWidgets.QMessageBox.warning(self, "Warning", "No entry selected")
 
@@ -384,17 +403,22 @@ class MainWindow(QMainWindow):
         """
             Delete entry
         """
-        selected_item = self.dbEntriesList.currentItem()
+        selected_item = self.idList.currentItem()
         if selected_item:
-            entry_index = self.dbEntriesList.currentRow()
+            entry_index = self.idList.currentRow()
 
-            # Remove the entry from the lists
-            del self.entryID[entry_index]
-            del self.entryUSRNAME[entry_index]
-            del self.entryPSW[entry_index]
+            if 0 <= entry_index < len(self.entryID):
+                # Remove the entry from all lists
+                del self.entryID[entry_index]
+                del self.entryUSRNAME[entry_index]
+                del self.entryPSW[entry_index]
 
-            # Remove the entry from the display
-            self.dbEntriesList.takeItem(entry_index)
+                # Remove the entry from the display
+                self.idList.takeItem(entry_index)
+                self.usernameList.takeItem(entry_index)
+                self.passwordList.takeItem(entry_index)
+            else:
+                QtWidgets.QMessageBox.warning(self, "Warning", "Invalid entry index")
         else:
             QtWidgets.QMessageBox.warning(self, "Warning", "No entry selected")
 
@@ -416,9 +440,22 @@ class MainWindow(QMainWindow):
             self.entryPSW.clear()
 
             # Clear the display
-            self.dbEntriesList.clear()
+            self.idList.clear()
+            self.usernameList.clear()
+            self.passwordList.clear()
 
             QtWidgets.QMessageBox.information(self, "Delete All", "The entire database has been deleted.")
+        
+    def toggle_password_visibility(self):
+        """
+            Toggle password visibility in the password list
+        """
+        for i in range(self.passwordList.count()):
+            item = self.passwordList.item(i)
+            if item.text().startswith("•"):  # Check if the password is hidden
+                item.setText(self.entryPSW[i])  # Show the actual password
+            else:
+                item.setText("•" * 12)  # Hide the password
 
     def generate_password(self):
         """
