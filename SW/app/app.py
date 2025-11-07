@@ -100,11 +100,17 @@ class MainWindow(QMainWindow):
         self.editPasswordButton.clicked.connect(self.edit_password_entry)
         self.editPasswordButton.move(590, 215)
 
-        # Delete button to delete entries
+        # Delete button to delete ENTRIES
         self.deleteEntryButton = QtWidgets.QPushButton(self)
         self.deleteEntryButton.setText("Delete Entry")
         self.deleteEntryButton.clicked.connect(self.delete_entry)
         self.deleteEntryButton.move(590, 245)
+
+        # Button to delete ENTIRE database
+        self.deleteDBButton = QtWidgets.QPushButton(self)
+        self.deleteDBButton.setText("Delete ALL")
+        self.deleteDBButton.clicked.connect(self.delete_database)
+        self.deleteDBButton.move(590, 275)
 
         # Generator button
         self.generatorButton = QtWidgets.QPushButton(self)
@@ -250,38 +256,74 @@ class MainWindow(QMainWindow):
         """
             Add password to app database
         """
-        if(self.deviceConnected):
-            # Prompt user for entry details
-            entry_id, ok1 = QtWidgets.QInputDialog.getText(self, "Add Entry", "Enter Entry ID:")
-            if not ok1 or not entry_id.strip():
-                QtWidgets.QMessageBox.warning(self, "Warning", "Wrong input")
-                return
-            if not entry_id.isdigit():
-                QtWidgets.QMessageBox.warning(self, "Warning", "ID is not a number")
-                return
-            if entry_id in self.entryID:
-                QtWidgets.QMessageBox.warning(self, "Warning", "ID must be unique")
-                return
+        if self.deviceConnected:
+            # Prompt user for entry details in a single dialog
+            dialog = QtWidgets.QDialog(self)
+            dialog.setWindowTitle("Add Entry")
+            dialog.setModal(True)
+            dialog.setFixedSize(400, 250)
 
-            username, ok2 = QtWidgets.QInputDialog.getText(self, "Add Entry", "Enter Username:")
-            if not ok2 or not username.strip():
-                QtWidgets.QMessageBox.warning(self, "Warning", "Wrong input")
-                return
+            layout = QtWidgets.QVBoxLayout(dialog)
 
-            password, ok3 = QtWidgets.QInputDialog.getText(self, "Add Entry", "Enter Password:")
-            if not ok3 or not password.strip():
-                QtWidgets.QMessageBox.warning(self, "Warning", "Wrong input")
-                return
+            id_label = QtWidgets.QLabel("Entry ID:")
+            id_input = QtWidgets.QLineEdit()
+            id_input.setMinimumHeight(30)  # Make the input box larger
+            layout.addWidget(id_label)
+            layout.addWidget(id_input)
+
+            username_label = QtWidgets.QLabel("Username:")
+            username_input = QtWidgets.QLineEdit()
+            username_input.setMinimumHeight(30)  # Make the input box larger
+            layout.addWidget(username_label)
+            layout.addWidget(username_input)
+
+            password_label = QtWidgets.QLabel("Password:")
+            password_input = QtWidgets.QLineEdit()
+            password_input.setEchoMode(QtWidgets.QLineEdit.Password)
+            password_input.setMinimumHeight(30)  # Make the input box larger
+            layout.addWidget(password_label)
+            layout.addWidget(password_input)
+
+            button_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel)
+            layout.addWidget(button_box)
+
+            def on_accept():
+                entry_id = id_input.text().strip()
+                username = username_input.text().strip()
+                password = password_input.text().strip()
+
+                if not entry_id:
+                    QtWidgets.QMessageBox.warning(self, "Warning", "Entry ID cannot be empty")
+                    return
+                if not entry_id.isdigit():
+                    QtWidgets.QMessageBox.warning(self, "Warning", "Entry ID must be a number")
+                    return
+                if entry_id in self.entryID:
+                    QtWidgets.QMessageBox.warning(self, "Warning", "Entry ID must be unique")
+                    return
+                if not username:
+                    QtWidgets.QMessageBox.warning(self, "Warning", "Username cannot be empty")
+                    return
+                if not password:
+                    QtWidgets.QMessageBox.warning(self, "Warning", "Password cannot be empty")
+                    return
+
+                # Append the new entry to the lists
+                self.entryID.append(entry_id)
+                self.entryUSRNAME.append(username)
+                self.entryPSW.append(password)
+
+                # Add the new entry to the display
+                self.dbEntriesList.addItem(f"{entry_id}      {username}\t\t{password}")
+
+                dialog.accept()
+
+            button_box.accepted.connect(on_accept)
+            button_box.rejected.connect(dialog.reject)
+
+            dialog.exec()
         else:
             QtWidgets.QMessageBox.warning(self, "Error", "No device connected")
-            return
-        # Append the new entry to the lists
-        self.entryID.append(entry_id)
-        self.entryUSRNAME.append(username)
-        self.entryPSW.append(password)
-
-        # Add the new entry to the display
-        self.dbEntriesList.addItem(f"{entry_id}      {username}\t\t{password}")
 
     def edit_username_entry(self):
         """
@@ -338,6 +380,7 @@ class MainWindow(QMainWindow):
                 self.dbEntriesList.item(entry_index).setText(f"{entryID}   {entryUSRNAME}\t\t{new_password}")
         else:
             QtWidgets.QMessageBox.warning(self, "Warning", "No entry selected")
+
     def delete_entry(self):
         """
             Delete entry
@@ -355,6 +398,28 @@ class MainWindow(QMainWindow):
             self.dbEntriesList.takeItem(entry_index)
         else:
             QtWidgets.QMessageBox.warning(self, "Warning", "No entry selected")
+
+    def delete_database(self):
+        """
+            Delete entire database
+        """
+        confirmation = QtWidgets.QMessageBox.question(
+            self,
+            "Delete All",
+            "Are you sure you want to delete the entire database?",
+            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No
+        )
+
+        if confirmation == QtWidgets.QMessageBox.Yes:
+            # Clear all entries from the lists
+            self.entryID.clear()
+            self.entryUSRNAME.clear()
+            self.entryPSW.clear()
+
+            # Clear the display
+            self.dbEntriesList.clear()
+
+            QtWidgets.QMessageBox.information(self, "Delete All", "The entire database has been deleted.")
 
     def generate_password(self):
         """

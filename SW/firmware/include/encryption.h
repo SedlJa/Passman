@@ -12,9 +12,11 @@
 
 /* Variables */
 const char SECRET_KEY[] = "MySecretKey12345";
+const char AES_BLOCK_SIZE = 16;
+const size_t KEY_BITS = 128;
 
 /* Functions */
-std::vector<uint8_t> get_encrypted_vector(const char *plaintext);
-String encrypt_data(const char *plainTextID);
+String encrypt_data(const char *plaintext);
+String decrypt_data(const String &base64_encrypted_data);
 
 #endif // ENCRYPTION_H
