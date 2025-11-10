@@ -73,79 +73,149 @@ void loop()
     menuPage2();
     if (rotaryEncoder.isEncoderButtonClicked())
     {
-      rotaryEncoder.setBoundaries(1, 2, true); // Update boundaries
-      rotaryEncoder.setEncoderValue(1);        // set value to 1
-      // bool choose = false;
-      while (!rotaryEncoder.isEncoderButtonDown())
+      connectedToApp();
+      if (!connectionHandler)
       {
-        if (rotaryEncoder.readEncoder() == 1) // Upload database to app
+        Serial.println("Opening serial port...");
+        connectionHandler = true;
+
+        while (true)
         {
-          uploadPage();
-          if (rotaryEncoder.isEncoderButtonClicked())
+          if (Serial.available() > 0)
           {
-            // Serial.println("Command: upload");
-            while (true)
+            String command = Serial.readStringUntil('\n');
+            command.trim(); // Remove any trailing whitespace or newline characters
+
+            if (command == "upload")
             {
-              if (Serial.available() > 0)
+              // Handle upload logic here
+              for (int i = 0; i < DB_LENGTH; i++)
               {
-                String message = Serial.readStringUntil('\n');
-                message.trim(); // Remove any trailing whitespace or newline characters
-                if (message == "load")
+                Serial.printf("%s;%s;%s\n", encrypt_data(db.id[i].c_str()).c_str(), encrypt_data(db.username[i].c_str()).c_str(), encrypt_data(db.password[i].c_str()).c_str());
+              }
+            }
+            else if (command == "download")
+            {
+              Serial.println("Download command received.");
+              // Handle download logic here
+              if (rotaryEncoder.isEncoderButtonClicked())
+              {
+                while (true)
                 {
-                  Serial.println("data");
-                  for (int i = 0; i < DB_LENGTH; i++)
+                  if (Serial.available() > 0)
                   {
-                    Serial.printf("%s;%s;%s\n", encrypt_data(db.id[i].c_str()).c_str(), encrypt_data(db.username[i].c_str()).c_str(), encrypt_data(db.password[i].c_str()).c_str());
+                    String message = Serial.readStringUntil('\n');
+                    message.trim(); // Remove any trailing whitespace or newline characters
+                    if (message == "download")
+                    {
+                      for (int i = 0; i < 6; i++)
+                      {
+                        while (Serial.available() == 0)
+                        {
+                          // Wait for data
+                        }
+                        String dataLine = Serial.readStringUntil('\n');
+                        dataLine.trim();                // Remove any trailing whitespace or newline characters
+                        parseAndStoreData(dataLine, i); // data are being decrypted in this function
+                        dataLine = "";
+                      }
+                      break;
+                    }
                   }
-                  break;
                 }
               }
             }
+            else if (command == "disconnect")
+            {
+              Serial.println("Disconnect command received.");
+              connectionHandler = false;
+              break; // Exit the loop
+            }
+            else
+            {
+              Serial.println("Unknown command received.");
+            }
           }
         }
-        else if (rotaryEncoder.readEncoder() == 2) // Download database from app
+      }
+    }
+    /*
+        if (rotaryEncoder.isEncoderButtonClicked())
         {
-          downloadPage();
-          if (rotaryEncoder.isEncoderButtonClicked())
+          rotaryEncoder.setBoundaries(1, 2, true); // Update boundaries
+          rotaryEncoder.setEncoderValue(1);        // set value to 1
+          // bool choose = false;
+          while (!rotaryEncoder.isEncoderButtonDown())
           {
-            while (true)
+            if (rotaryEncoder.readEncoder() == 1) // Upload database to app
             {
-              if (Serial.available() > 0)
+              uploadPage();
+              if (rotaryEncoder.isEncoderButtonClicked())
               {
-                String message = Serial.readStringUntil('\n');
-                message.trim(); // Remove any trailing whitespace or newline characters
-                if (message == "download")
+                // Serial.println("Command: upload");
+                while (true)
                 {
-                  for (int i = 0; i < 6; i++)
+                  if (Serial.available() > 0)
                   {
-                    while (Serial.available() == 0)
+                    String message = Serial.readStringUntil('\n');
+                    message.trim(); // Remove any trailing whitespace or newline characters
+                    if (message == "load")
                     {
-                      // Wait for data
+                      Serial.println("data");
+                      for (int i = 0; i < DB_LENGTH; i++)
+                      {
+                        Serial.printf("%s;%s;%s\n", encrypt_data(db.id[i].c_str()).c_str(), encrypt_data(db.username[i].c_str()).c_str(), encrypt_data(db.password[i].c_str()).c_str());
+                      }
+                      break;
                     }
-                    String dataLine = Serial.readStringUntil('\n');
-                    dataLine.trim();                // Remove any trailing whitespace or newline characters
-                    parseAndStoreData(dataLine, i); // data are being decrypted in this function
-                    dataLine = "";
                   }
-                  break;
+                }
+              }
+            }
+            else if (rotaryEncoder.readEncoder() == 2) // Download database from app
+            {
+              downloadPage();
+              if (rotaryEncoder.isEncoderButtonClicked())
+              {
+                while (true)
+                {
+                  if (Serial.available() > 0)
+                  {
+                    String message = Serial.readStringUntil('\n');
+                    message.trim(); // Remove any trailing whitespace or newline characters
+                    if (message == "download")
+                    {
+                      for (int i = 0; i < 6; i++)
+                      {
+                        while (Serial.available() == 0)
+                        {
+                          // Wait for data
+                        }
+                        String dataLine = Serial.readStringUntil('\n');
+                        dataLine.trim();                // Remove any trailing whitespace or newline characters
+                        parseAndStoreData(dataLine, i); // data are being decrypted in this function
+                        dataLine = "";
+                      }
+                      break;
+                    }
+                  }
                 }
               }
             }
           }
         }
       }
-    }
-  }
-
-  else if (rotaryEncoder.readEncoder() == 3) // Settings
-  {
-    menuPage3();
-
-    if (rotaryEncoder.isEncoderButtonClicked())
+    */
+    else if (rotaryEncoder.readEncoder() == 3) // Settings
     {
-      while (!rotaryEncoder.isEncoderButtonClicked())
+      menuPage3();
+
+      if (rotaryEncoder.isEncoderButtonClicked())
       {
-        authorInfo();
+        while (!rotaryEncoder.isEncoderButtonClicked())
+        {
+          authorInfo();
+        }
       }
     }
   }

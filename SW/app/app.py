@@ -182,6 +182,8 @@ class MainWindow(QMainWindow):
             Disconnect app from serial port
         """
         if self.serial.isOpen():
+            # Send "disconnect" command
+            self.serial.write(b"disconnect")
             # Clear database for enhanced security, while device is disconnected
             self.entryID.clear()
             self.entryUSRNAME.clear()
@@ -202,8 +204,8 @@ class MainWindow(QMainWindow):
             Load database from PassMan device
             Each entry is loaded encrypted - decrpytion is a part of this function
         """
-        self.serial.write(b"load\n")
-
+        self.serial.write(b"upload")
+        QtCore.QThread.msleep(100) # Delay in communication
         if self.serial.isOpen():
             try:
                 data = self.serial.readAll().data().decode('utf-8')
@@ -259,7 +261,7 @@ class MainWindow(QMainWindow):
         self.idList.clear()
         for entry_id in self.entryID:
             self.idList.addItem(entry_id)
-        self.serial.write(b"download\n")
+        self.serial.write(b"download")
         
         if(self.serial.isOpen()):
             try:
