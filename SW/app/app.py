@@ -85,40 +85,33 @@ class MainWindow(QMainWindow):
 
         # Edit button to edit username of entry
         self.editDBButton = QtWidgets.QPushButton(self)
-        self.editDBButton.setText("Edit Username")
-        self.editDBButton.clicked.connect(self.edit_username_entry)
+        self.editDBButton.setText("Edit Entry")
+        self.editDBButton.clicked.connect(self.edit_entry)
         self.editDBButton.move(590, 185)
-
-        # Edit button to edit password of entry
-        self.editPasswordButton = QtWidgets.QPushButton(self)
-        self.editPasswordButton.setText("Edit Password")
-
-        self.editPasswordButton.clicked.connect(self.edit_password_entry)
-        self.editPasswordButton.move(590, 215)
 
         # Delete button to delete ENTRIES
         self.deleteEntryButton = QtWidgets.QPushButton(self)
         self.deleteEntryButton.setText("Delete Entry")
         self.deleteEntryButton.clicked.connect(self.delete_entry)
-        self.deleteEntryButton.move(590, 245)
+        self.deleteEntryButton.setGeometry(590, 215, 100, 30)
 
         # Button to delete ENTIRE database
         self.deleteDBButton = QtWidgets.QPushButton(self)
         self.deleteDBButton.setText("Delete ALL")
         self.deleteDBButton.clicked.connect(self.delete_database)
-        self.deleteDBButton.move(590, 275)
+        self.deleteDBButton.setGeometry(590, 245, 100, 30)
 
         # Toggle button - password visibility
         self.togglePasswordButton = QtWidgets.QPushButton(self)
         self.togglePasswordButton.setText("PSW Visibility")
         self.togglePasswordButton.clicked.connect(self.toggle_password_visibility)
-        self.togglePasswordButton.move(590, 305)
+        self.togglePasswordButton.setGeometry(590, 275, 100, 30)
 
         # Generator button
         self.generatorButton = QtWidgets.QPushButton(self)
         self.generatorButton.setText("Generate PSW")
         self.generatorButton.clicked.connect(self.generate_password)
-        self.generatorButton.move(590, 335)
+        self.generatorButton.setGeometry(590, 305, 100, 30)
 
         # Lists for database entries
         self.idList = QtWidgets.QListWidget(self)
@@ -245,6 +238,11 @@ class MainWindow(QMainWindow):
                         self.usernameList.addItem(entryUSRNAME)
                         self.passwordList.addItem(entryPSW)
 
+                        # Update password list to show inputted passwords as 12 asterisks
+                        for i in range(self.passwordList.count()):
+                            item = self.passwordList.item(i)
+                            item.setText("•" * 12)
+
             except Exception as e:
                     QtWidgets.QMessageBox.critical(self, "Error", f"Failed to read data: {str(e)}")
         else:
@@ -254,6 +252,13 @@ class MainWindow(QMainWindow):
         """
             Function to upload password database to a PassMan device
         """
+        # Correct IDs to be in order (1, 2, 3, ...)
+        self.entryID = [str(i + 1) for i in range(len(self.entryID))]
+        
+        # Update the display with corrected IDs
+        self.idList.clear()
+        for entry_id in self.entryID:
+            self.idList.addItem(entry_id)
         self.serial.write(b"download\n")
         
         if(self.serial.isOpen()):
@@ -285,15 +290,14 @@ class MainWindow(QMainWindow):
             dialog = QtWidgets.QDialog(self)
             dialog.setWindowTitle("Add Entry")
             dialog.setModal(True)
-            dialog.setFixedSize(400, 250)
+            dialog.setFixedSize(400, 300)
 
             layout = QtWidgets.QVBoxLayout(dialog)
 
-            id_label = QtWidgets.QLabel("Entry ID:")
-            id_input = QtWidgets.QLineEdit()
-            id_input.setMinimumHeight(30)  # Make the input box larger
+            last_id = max(map(int, self.entryID), default=0)
+            new_id = last_id + 1
+            id_label = QtWidgets.QLabel(f"ID: {new_id}")
             layout.addWidget(id_label)
-            layout.addWidget(id_input)
 
             username_label = QtWidgets.QLabel("Username:")
             username_input = QtWidgets.QLineEdit()
@@ -308,11 +312,23 @@ class MainWindow(QMainWindow):
             layout.addWidget(password_label)
             layout.addWidget(password_input)
 
+            # Add a checkbox to toggle password visibility
+            show_password_checkbox = QtWidgets.QCheckBox("Show Password")
+            layout.addWidget(show_password_checkbox)
+
+            def toggle_password_visibility():
+                if show_password_checkbox.isChecked():
+                    password_input.setEchoMode(QtWidgets.QLineEdit.Normal)
+                else:
+                    password_input.setEchoMode(QtWidgets.QLineEdit.Password)
+
+            show_password_checkbox.stateChanged.connect(toggle_password_visibility)
+
             button_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel)
             layout.addWidget(button_box)
 
             def on_accept():
-                entry_id = id_input.text().strip()
+                entry_id = str(new_id).strip()
                 username = username_input.text().strip()
                 password = password_input.text().strip()
 
@@ -340,7 +356,7 @@ class MainWindow(QMainWindow):
                 # Add each part of the entry to the respective list
                 self.idList.addItem(entry_id)
                 self.usernameList.addItem(username)
-                self.passwordList.addItem(password)
+                self.passwordList.addItem("•" * 12)
 
                 dialog.accept()
 
@@ -351,51 +367,80 @@ class MainWindow(QMainWindow):
         else:
             QtWidgets.QMessageBox.warning(self, "Error", "No device connected")
 
-    def edit_username_entry(self):
+    def edit_entry(self):
         """
-            Edit username entry
+            Edit both username and password of an entry
         """
-        selected_item = self.usernameList.currentItem()
+        selected_item = self.idList.currentItem()
         if selected_item:
-            entry_index = self.usernameList.currentRow()
+            entry_index = self.idList.currentRow()
 
-            # Prompt user for new username
-            new_username, ok = QtWidgets.QInputDialog.getText(self, "Edit Username", "Enter new username:")
-            if not ok:
-                return
-            if not new_username.strip():
-                QtWidgets.QMessageBox.warning(self, "Warning", "Username cannot be empty")
-                return
+            # Prompt user for new username and password in a single dialog
+            dialog = QtWidgets.QDialog(self)
+            dialog.setWindowTitle("Edit Entry")
+            dialog.setModal(True)
+            dialog.setFixedSize(400, 350)
 
-            # Update the entry in the lists
-            self.entryUSRNAME[entry_index] = new_username
+            layout = QtWidgets.QVBoxLayout(dialog)
 
-            # Update the display
-            self.usernameList.item(entry_index).setText(new_username)
-        else:
-            QtWidgets.QMessageBox.warning(self, "Warning", "No entry selected")
+            id_label = QtWidgets.QLabel(f"ID: {self.entryID[entry_index]}")
+            layout.addWidget(id_label)
 
-    def edit_password_entry(self):
-        """
-            Edit password of entry
-        """
-        selected_item = self.passwordList.currentItem()
-        if selected_item:
-            entry_index = self.passwordList.currentRow()
+            username_label = QtWidgets.QLabel("Username:")
+            username_input = QtWidgets.QLineEdit()
+            username_input.setText(self.entryUSRNAME[entry_index])
+            username_input.setMinimumHeight(30)
+            layout.addWidget(username_label)
+            layout.addWidget(username_input)
 
-            # Prompt user for new password
-            new_password, ok = QtWidgets.QInputDialog.getText(self, "Edit Password", "Enter new password:")
-            if not ok:
-                return
-            if not new_password.strip():
-                QtWidgets.QMessageBox.warning(self, "Warning", "Password cannot be empty")
-                return
+            password_label = QtWidgets.QLabel("Password:")
+            password_input = QtWidgets.QLineEdit()
+            password_input.setText(self.entryPSW[entry_index])
+            password_input.setEchoMode(QtWidgets.QLineEdit.Password)
+            password_input.setMinimumHeight(30)
+            layout.addWidget(password_label)
+            layout.addWidget(password_input)
 
-            # Update the entry in the lists
-            self.entryPSW[entry_index] = new_password
+            # Add a checkbox to toggle password visibility
+            show_password_checkbox = QtWidgets.QCheckBox("Show Password")
+            layout.addWidget(show_password_checkbox)
 
-            # Update the display
-            self.passwordList.item(entry_index).setText(new_password)
+            def toggle_password_visibility():
+                if show_password_checkbox.isChecked():
+                    password_input.setEchoMode(QtWidgets.QLineEdit.Normal)
+                else:
+                    password_input.setEchoMode(QtWidgets.QLineEdit.Password)
+
+            show_password_checkbox.stateChanged.connect(toggle_password_visibility)
+
+            button_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel)
+            layout.addWidget(button_box)
+
+            def on_accept():
+                new_username = username_input.text().strip()
+                new_password = password_input.text().strip()
+
+                if not new_username:
+                    QtWidgets.QMessageBox.warning(self, "Warning", "Username cannot be empty")
+                    return
+                if not new_password:
+                    QtWidgets.QMessageBox.warning(self, "Warning", "Password cannot be empty")
+                    return
+
+                # Update the entry in the lists
+                self.entryUSRNAME[entry_index] = new_username
+                self.entryPSW[entry_index] = new_password
+
+                # Update the display
+                self.usernameList.item(entry_index).setText(new_username)
+                self.passwordList.item(entry_index).setText("•" * 12)
+
+                dialog.accept()
+
+            button_box.accepted.connect(on_accept)
+            button_box.rejected.connect(dialog.reject)
+
+            dialog.exec()
         else:
             QtWidgets.QMessageBox.warning(self, "Warning", "No entry selected")
 
