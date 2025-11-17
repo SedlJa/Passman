@@ -23,9 +23,13 @@ class MainWindow(QMainWindow):
         self.setGeometry(500, 350, 740, 400)
         self.setWindowTitle("PassMan Application")
         self.setWindowIcon(QtGui.QIcon("img/blueSafe.png"))
+        # Fix the window size
+        self.setFixedSize(740, 400)
         self.initUI()
+        
         self.serial = QSerialPort(self)
         self.deviceConnected = False
+        
         # Decrypted database
         self.entryID = []
         self.entryUSRNAME = []
@@ -164,7 +168,7 @@ class MainWindow(QMainWindow):
         selected_port = self.comPortDropdown.currentText()
         if selected_port:
             self.serial.setPortName(selected_port)
-            self.serial.setBaudRate(QSerialPort.Baud9600)
+            self.serial.setBaudRate(QSerialPort.Baud115200)
             self.serial.setDataBits(QSerialPort.Data8)
             self.serial.setParity(QSerialPort.NoParity)
             self.serial.setStopBits(QSerialPort.OneStop)
@@ -183,7 +187,6 @@ class MainWindow(QMainWindow):
         """
         if self.serial.isOpen():
             # Send "disconnect" command
-            self.serial.write(b"disconnect")
             # Clear database for enhanced security, while device is disconnected
             self.entryID.clear()
             self.entryUSRNAME.clear()
@@ -191,20 +194,20 @@ class MainWindow(QMainWindow):
             self.idList.clear()
             self.usernameList.clear()
             self.passwordList.clear()
+            self.serial.write(b"disconnect")
             # Device connection handler
             self.deviceConnected = False
             # Close serial
-            self.serial.close()
             QtWidgets.QMessageBox.information(self, "Disconnection", "Disconnected from the serial port")
         else:
             QtWidgets.QMessageBox.warning(self, "Warning", "Serial port is not open")
-    
+        
     def load_database(self):
         """
             Load database from PassMan device
             Each entry is loaded encrypted - decrpytion is a part of this function
         """
-        self.serial.write(b"upload")
+        self.serial.write(b"load")
         QtCore.QThread.msleep(100) # Delay in communication
         if self.serial.isOpen():
             try:
@@ -259,9 +262,10 @@ class MainWindow(QMainWindow):
         
         # Update the display with corrected IDs
         self.idList.clear()
+
         for entry_id in self.entryID:
             self.idList.addItem(entry_id)
-        self.serial.write(b"download")
+        self.serial.write(b"download\n")
         
         if(self.serial.isOpen()):
             try:

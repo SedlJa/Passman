@@ -5,6 +5,8 @@
 #include "database.h"
 #include "encryption.h"
 
+#define BAUDRATE 115200
+
 /* Global variables */
 int unlockHandler = 0;          // Handles authentication
 bool connectionHandler = false; // Handles connection to webUI
@@ -14,7 +16,7 @@ String receivedData = " ";
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(BAUDRATE);
 
   /* Rotary encoder init */
   rotary_setup();
@@ -30,24 +32,6 @@ void setup()
 
   /* database init */
   loadDatabase();
-
-  // This is the Base64 string from the Python encryption example: "ACK_OK"
-  const String encrypted_from_python = "Lc9GKQS0eNhop/8/K/H82Yl8KAzYKjNGMz27u9y8b+o=";
-  Serial.print("Encrypted (Base64 from Python): ");
-  Serial.println(encrypted_from_python);
-
-  String decrypted_message = decrypt_data(encrypted_from_python);
-
-  if (decrypted_message.length() > 0)
-  {
-    Serial.print("\n**Decrypted (ESP32 String): ");
-    Serial.print(decrypted_message);
-    Serial.println("**");
-  }
-  else
-  {
-    Serial.println("\nDecryption failed.");
-  }
 }
 
 void loop()
@@ -71,151 +55,82 @@ void loop()
   else if (rotaryEncoder.readEncoder() == 2) // Connect
   {
     menuPage2();
+
     if (rotaryEncoder.isEncoderButtonClicked())
     {
-      connectedToApp();
-      if (!connectionHandler)
+      rotaryEncoder.setBoundaries(1, 2, true); // Update boundaries
+      rotaryEncoder.setEncoderValue(1);        // set value to 1
+      // bool choose = false;
+      while (!rotaryEncoder.isEncoderButtonDown())
       {
-        Serial.println("Opening serial port...");
-        connectionHandler = true;
-
-        while (true)
+        if (rotaryEncoder.readEncoder() == 1) // Upload database to app
         {
-          if (Serial.available() > 0)
+          uploadPage();
+          if (rotaryEncoder.isEncoderButtonClicked())
           {
-            String command = Serial.readStringUntil('\n');
-            command.trim(); // Remove any trailing whitespace or newline characters
-
-            if (command == "upload")
+            // Serial.println("Command: upload");
+            while (true)
             {
-              // Handle upload logic here
-              for (int i = 0; i < DB_LENGTH; i++)
+              if (Serial.available() > 0)
               {
-                Serial.printf("%s;%s;%s\n", encrypt_data(db.id[i].c_str()).c_str(), encrypt_data(db.username[i].c_str()).c_str(), encrypt_data(db.password[i].c_str()).c_str());
-              }
-            }
-            else if (command == "download")
-            {
-              Serial.println("Download command received.");
-              // Handle download logic here
-              if (rotaryEncoder.isEncoderButtonClicked())
-              {
-                while (true)
+                String message = Serial.readStringUntil('\n');
+                message.trim(); // Remove any trailing whitespace or newline characters
+                if (message == "load")
                 {
-                  if (Serial.available() > 0)
+                  Serial.println("data");
+                  for (int i = 0; i < DB_LENGTH; i++)
                   {
-                    String message = Serial.readStringUntil('\n');
-                    message.trim(); // Remove any trailing whitespace or newline characters
-                    if (message == "download")
-                    {
-                      for (int i = 0; i < 6; i++)
-                      {
-                        while (Serial.available() == 0)
-                        {
-                          // Wait for data
-                        }
-                        String dataLine = Serial.readStringUntil('\n');
-                        dataLine.trim();                // Remove any trailing whitespace or newline characters
-                        parseAndStoreData(dataLine, i); // data are being decrypted in this function
-                        dataLine = "";
-                      }
-                      break;
-                    }
+                    Serial.printf("%s;%s;%s\n", encrypt_data(db.id[i].c_str()).c_str(), encrypt_data(db.username[i].c_str()).c_str(), encrypt_data(db.password[i].c_str()).c_str());
                   }
+                  break;
                 }
               }
             }
-            else if (command == "disconnect")
+          }
+        }
+        else if (rotaryEncoder.readEncoder() == 2) // Download database from app
+        {
+          downloadPage();
+          if (rotaryEncoder.isEncoderButtonClicked())
+          {
+            while (true)
             {
-              Serial.println("Disconnect command received.");
-              connectionHandler = false;
-              break; // Exit the loop
-            }
-            else
-            {
-              Serial.println("Unknown command received.");
+              if (Serial.available() > 0)
+              {
+                String message = Serial.readStringUntil('\n');
+                message.trim(); // Remove any trailing whitespace or newline characters
+                if (message == "download")
+                {
+                  for (int i = 0; i < 6; i++)
+                  {
+                    while (Serial.available() == 0)
+                    {
+                      // Wait for data
+                    }
+                    String dataLine = Serial.readStringUntil('\n');
+                    dataLine.trim();                // Remove any trailing whitespace or newline characters
+                    parseAndStoreData(dataLine, i); // data are being decrypted in this function
+                    dataLine = "";
+                  }
+                  break;
+                }
+              }
             }
           }
         }
       }
     }
-    /*
-        if (rotaryEncoder.isEncoderButtonClicked())
-        {
-          rotaryEncoder.setBoundaries(1, 2, true); // Update boundaries
-          rotaryEncoder.setEncoderValue(1);        // set value to 1
-          // bool choose = false;
-          while (!rotaryEncoder.isEncoderButtonDown())
-          {
-            if (rotaryEncoder.readEncoder() == 1) // Upload database to app
-            {
-              uploadPage();
-              if (rotaryEncoder.isEncoderButtonClicked())
-              {
-                // Serial.println("Command: upload");
-                while (true)
-                {
-                  if (Serial.available() > 0)
-                  {
-                    String message = Serial.readStringUntil('\n');
-                    message.trim(); // Remove any trailing whitespace or newline characters
-                    if (message == "load")
-                    {
-                      Serial.println("data");
-                      for (int i = 0; i < DB_LENGTH; i++)
-                      {
-                        Serial.printf("%s;%s;%s\n", encrypt_data(db.id[i].c_str()).c_str(), encrypt_data(db.username[i].c_str()).c_str(), encrypt_data(db.password[i].c_str()).c_str());
-                      }
-                      break;
-                    }
-                  }
-                }
-              }
-            }
-            else if (rotaryEncoder.readEncoder() == 2) // Download database from app
-            {
-              downloadPage();
-              if (rotaryEncoder.isEncoderButtonClicked())
-              {
-                while (true)
-                {
-                  if (Serial.available() > 0)
-                  {
-                    String message = Serial.readStringUntil('\n');
-                    message.trim(); // Remove any trailing whitespace or newline characters
-                    if (message == "download")
-                    {
-                      for (int i = 0; i < 6; i++)
-                      {
-                        while (Serial.available() == 0)
-                        {
-                          // Wait for data
-                        }
-                        String dataLine = Serial.readStringUntil('\n');
-                        dataLine.trim();                // Remove any trailing whitespace or newline characters
-                        parseAndStoreData(dataLine, i); // data are being decrypted in this function
-                        dataLine = "";
-                      }
-                      break;
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    */
-    else if (rotaryEncoder.readEncoder() == 3) // Settings
-    {
-      menuPage3();
+  }
 
-      if (rotaryEncoder.isEncoderButtonClicked())
+  else if (rotaryEncoder.readEncoder() == 3) // Settings
+  {
+    menuPage3();
+
+    if (rotaryEncoder.isEncoderButtonClicked())
+    {
+      while (!rotaryEncoder.isEncoderButtonClicked())
       {
-        while (!rotaryEncoder.isEncoderButtonClicked())
-        {
-          authorInfo();
-        }
+        authorInfo();
       }
     }
   }
