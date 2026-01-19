@@ -6,7 +6,7 @@
 #include "encryption.h"
 
 #define BAUDRATE 115200
-#define USERLED 13
+#define USERLED 13 // blue user led definition
 
 /* HELLO */
 
