@@ -18,14 +18,15 @@ Adafruit_SH1106G display = Adafruit_SH1106G(DISPLAYWIDTH, DISPLAYHEIGH, &Wire, -
  */
 void display_setup()
 {
-    Wire.setPins(5, 4); // Set I2C pins [sda, scl ]
-    Wire.begin();       // Inicializace I2C
+    Wire.setPins(48, 47); // Set I2C pins [sda, scl ]
+    Wire.begin();         // Inicializace I2C
 
     int state; // OLED I2C state
     state = find_I2C_addr();
     if (state == 0)
     {
         Serial.print("OLED display found.\r\n");
+        delay(5000);
     }
     else if (state == 1)
     {
@@ -71,9 +72,10 @@ void unlockPage()
 /**
  * @brief Function that shows tick while authentication passed
  */
-void unlockSuccessfull()
+void unlockSuccessfull(int ledpin)
 {
     // stage 1
+    digitalWrite(ledpin, HIGH); // turn on LED
     display.clearDisplay();
     display.drawBitmap(0, 0, epd_bitmap_tick, 128, 64, SH110X_WHITE);
     display.display();
@@ -89,6 +91,7 @@ void unlockSuccessfull()
     display.display();
     delay(1000);
     display.clearDisplay();
+    digitalWrite(ledpin, LOW); // Turn off led
 }
 
 /**

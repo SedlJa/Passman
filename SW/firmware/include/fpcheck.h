@@ -16,8 +16,8 @@ uint8_t getFingerprintID(); // Function which handles fingerprint input
 
 int getFingerprintIDez(); // Function to get fingerprint ID from database
 
-void fpSetup();                   // Function to init fpSerial and check if sensor is found
-void fpUnlockDevice(int handler); // Function that runs authentification procedure
+void fpSetup();                               // Function to init fpSerial and check if sensor is found
+void fpUnlockDevice(int handler, int ledpin); // Function that runs authentification procedure
 
 #endif
 

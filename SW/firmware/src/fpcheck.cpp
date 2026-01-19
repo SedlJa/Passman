@@ -139,7 +139,7 @@ uint8_t getFingerprintID()
     @brief Function that handles device unlock procedure
     @param handler  handler for global use
 */
-void fpUnlockDevice(int handler)
+void fpUnlockDevice(int handler, int ledpin)
 {
     /* Unlock procedure */
     while (1)
@@ -151,13 +151,15 @@ void fpUnlockDevice(int handler)
         if (handler == 1)
         {
             Serial.println((String) "Device UNLOCKED, unlockHandler value: " + (String)handler);
+
             fpSerial.end(); // End fpSerial for the consumption save
+            delay(500);
             break;
         }
     }
 
     // Show Tick when succesfully logged in
-    unlockSuccessfull();
+    unlockSuccessfull(ledpin);
 }
 
 /*

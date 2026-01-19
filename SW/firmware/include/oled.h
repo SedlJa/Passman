@@ -35,8 +35,8 @@ void display_setup();
 void test_print(int rotaryVal);
 
 /* Unlock page */
-void unlockPage();        // while scanning fingerprint
-void unlockSuccessfull(); // Shows tick while authentication passed
+void unlockPage();                  // while scanning fingerprint
+void unlockSuccessfull(int ledpin); // Shows tick while authentication passed
 
 /* Main Menu pages */
 void menuPage1(); // database

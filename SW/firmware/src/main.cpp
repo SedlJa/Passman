@@ -6,6 +6,7 @@
 #include "encryption.h"
 
 #define BAUDRATE 115200
+#define USERLED 13
 
 /* Global variables */
 int unlockHandler = 0;          // Handles authentication
@@ -17,7 +18,8 @@ String receivedData = " ";
 void setup()
 {
   Serial.begin(BAUDRATE);
-
+  /* User LED setup */
+  pinMode(USERLED, OUTPUT);
   /* Rotary encoder init */
   rotary_setup();
 
@@ -28,7 +30,7 @@ void setup()
   fpSetup(); // Sets up fp sensor
 
   /* Unlock Procedure - fingerprint */
-  fpUnlockDevice(unlockHandler);
+  fpUnlockDevice(unlockHandler, USERLED);
 
   /* database init */
   loadDatabase();
