@@ -8,6 +8,8 @@
 #define BAUDRATE 115200
 #define USERLED 13
 
+/* HELLO */
+
 /* Global variables */
 int unlockHandler = 0;          // Handles authentication
 bool connectionHandler = false; // Handles connection to webUI
