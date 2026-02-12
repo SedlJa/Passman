@@ -40,8 +40,9 @@ void unlockSuccessfull(int ledpin); // Shows tick while authentication passed
 
 /* Main Menu pages */
 void menuPage1(); // database
-void menuPage2(); // connect
-void menuPage3(); // settings
+void menuPage2(); // upload
+void menuPage3(); // download
+void menuPage4(); // settings
 
 /* Connecting page */
 void connectingPage1();

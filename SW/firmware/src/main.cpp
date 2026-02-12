@@ -56,7 +56,7 @@ void loop()
       rotaryEncoder.setBoundaries(1, 3, false); // update boundaries to db lenght
     }
   }
-  else if (rotaryEncoder.readEncoder() == 2) // Connect
+  else if (rotaryEncoder.readEncoder() == 2) // Upload
   {
     menuPage2();
 
@@ -126,7 +126,7 @@ void loop()
     }
   }
 
-  else if (rotaryEncoder.readEncoder() == 3) // Settings
+  else if (rotaryEncoder.readEncoder() == 3) // Download
   {
     menuPage3();
 
@@ -137,5 +137,9 @@ void loop()
         authorInfo();
       }
     }
+  }
+  else if (rotaryEncoder.readEncoder() == 4) // Settings
+  {
+    menuPage4();
   }
 }

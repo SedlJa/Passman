@@ -22,14 +22,14 @@ void rotary_setup()
 
     // Set boundaries and if values should cycle or not
     bool circleValues = false;
-    rotaryEncoder.setBoundaries(1, 3, circleValues); // minValue, maxValue, circleValues true|false (when max go to min and vice versa)
+    rotaryEncoder.setBoundaries(1, 4, circleValues); // minValue, maxValue, circleValues true|false (when max go to min and vice versa)
     rotaryEncoder.setAcceleration(1);                // Set acceleration factor
 
     // Check if encoder is initialized
     if (initVal == 0)
     {
         Serial.println("Rotary encoder initialized...");
-        delay(2000); // Init delay
+        // delay(2000); // Init delay
     }
     else
     {
