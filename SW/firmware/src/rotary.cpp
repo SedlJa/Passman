@@ -15,7 +15,7 @@ AiEsp32RotaryEncoder rotaryEncoder = AiEsp32RotaryEncoder(ROTARY_ENCODER_A_PIN, 
 */
 void rotary_setup()
 {
-    uint8_t initVal = 0; // Initialize the rotary encoder value
+    uint8_t initVal = 1; // Initialize the rotary encoder value
 
     rotaryEncoder.begin();               // Initialize rotary encoder
     rotaryEncoder.setup(readEncoderISR); // Setup the encoder with the ISR
@@ -26,7 +26,7 @@ void rotary_setup()
     rotaryEncoder.setAcceleration(1);                // Set acceleration factor
 
     // Check if encoder is initialized
-    if (initVal == 0)
+    if (initVal == 1)
     {
         Serial.println("Rotary encoder initialized...");
         // delay(2000); // Init delay
