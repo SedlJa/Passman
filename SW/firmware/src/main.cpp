@@ -11,13 +11,10 @@
 /* HELLO */
 
 /* Global variables */
-int unlockHandler = 0;          // Handles authentication
-int uploadHandler = 0;          // Handles upload action
-int downloadHandler = 0;        // Handles download action
-bool connectionHandler = false; // Handles connection to webUI
-bool dbHandler = true;
-bool stringComplete = false;
-String receivedData = " ";
+int unlockHandler = 0;     // Handles authentication
+int uploadHandler = 0;     // Handles upload action
+int connectionHandler = 0; // Handles connection to the app
+int downloadHandler = 0;   // Handles download action
 
 void setup()
 {
@@ -58,18 +55,20 @@ void loop()
     }
   }
 
-  // UPLOAD DATABASE
-  else if (rotaryEncoder.readEncoder() == 2) // Upload
+  // Connect to APP
+  else if (rotaryEncoder.readEncoder() == 2 && 3) // Upload
   {
     menuPage2();
 
     if (rotaryEncoder.isEncoderButtonClicked())
     {
-      uploadHandler = 1;
+      connectionHandler = 1;
     }
     //  Serial.println("Command: upload");
-    while (uploadHandler == 1)
+    while (connectionHandler == 1)
     {
+      digitalWrite(USERLED, HIGH);
+      // load command
       if (Serial.available() > 0)
       {
         String message = Serial.readStringUntil('\n');
@@ -81,7 +80,35 @@ void loop()
           {
             Serial.printf("%s;%s;%s\n", encrypt_data(db.id[i].c_str()).c_str(), encrypt_data(db.username[i].c_str()).c_str(), encrypt_data(db.password[i].c_str()).c_str());
           }
-          uploadHandler = 0;
+          connectionHandler = 0;
+          digitalWrite(USERLED, LOW);
+          break;
+        }
+        // Download command
+        else if (message == "download")
+        {
+          // Read the database length from the next line
+          while (Serial.available() == 0)
+          {
+            // Wait for data
+          }
+          String lengthLine = Serial.readStringUntil('\n');
+          lengthLine.trim();
+          int newDbLength = lengthLine.toInt();
+
+          for (int i = 0; i < newDbLength; i++)
+          {
+            while (Serial.available() == 0)
+            {
+              // Wait for data
+            }
+            String dataLine = Serial.readStringUntil('\n');
+            dataLine.trim();                // Remove any trailing whitespace or newline characters
+            parseAndStoreData(dataLine, i); // data are being decrypted in this function
+            dataLine = "";
+          }
+          connectionHandler = 0;
+          digitalWrite(USERLED, LOW);
           break;
         }
       }
@@ -90,6 +117,7 @@ void loop()
   }
 
   // DOWNLOAD DATABASE
+  /*
   else if (rotaryEncoder.readEncoder() == 3) // Download
   {
     menuPage3();
@@ -131,7 +159,7 @@ void loop()
       }
     }
   }
-
+  */
   // SAVE DATABASE
   else if (rotaryEncoder.readEncoder() == 4) // Save
   {
@@ -159,7 +187,7 @@ void loop()
     {
       while (!rotaryEncoder.isEncoderButtonClicked())
       {
-        authorInfo();
+        deviceInfo();
       }
     }
   }

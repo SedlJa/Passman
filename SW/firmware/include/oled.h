@@ -10,6 +10,8 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SH110X.h>
 #include <Wire.h>
+#include <ArduinoJson.h>
+#include "esp_spiffs.h"
 
 // Create instance of OLED display
 extern Adafruit_SH1106G display;
@@ -25,6 +27,7 @@ extern const unsigned char epd_bitmap_upload[];
 extern const unsigned char epd_bitmap_savedb[];
 extern const unsigned char epd_bitmap_deleteall[];
 extern const unsigned char epd_bitmap_devinfo[];
+extern const unsigned char epd_bitmap_connect[];
 
 /* Functions */
 void display_setup();
@@ -55,6 +58,6 @@ void downloadPage();
 void databasePage(int dbEntry);
 
 /* Author page */
-void authorInfo();
+void deviceInfo();
 
 #endif // OLED_H
