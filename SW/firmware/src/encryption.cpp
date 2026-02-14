@@ -87,12 +87,12 @@ String decrypt_data(const String &base64_encrypted_data)
     const unsigned char *input_ptr = (const unsigned char *)base64_encrypted_data.c_str();
     size_t input_len = base64_encrypted_data.length();
 
-    // Determine required buffer size
-    int ret = mbedtls_base64_decode(NULL, 0, &decoded_len, input_ptr, input_len);
+    // Allocate buffer for Base64 decoding
+    int ret = mbedtls_base64_decode(nullptr, 0, &decoded_len, input_ptr, input_len);
 
-    if (ret != MBEDTLS_ERR_BASE64_BUFFER_TOO_SMALL && ret != 0)
+    if (ret != 0 && ret != MBEDTLS_ERR_BASE64_BUFFER_TOO_SMALL)
     {
-        Serial.printf("Error: Base64 pre-check failed. Code: %d\n", ret);
+        Serial.printf("Error: Base64 decoding pre-check failed. Code: %d\n", ret);
         return "";
     }
 

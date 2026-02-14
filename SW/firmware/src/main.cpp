@@ -12,6 +12,8 @@
 
 /* Global variables */
 int unlockHandler = 0;          // Handles authentication
+int uploadHandler = 0;          // Handles upload action
+int downloadHandler = 0;        // Handles download action
 bool connectionHandler = false; // Handles connection to webUI
 bool dbHandler = true;
 bool stringComplete = false;
@@ -34,8 +36,8 @@ void setup()
   /* Unlock Procedure - fingerprint */
   fpUnlockDevice(unlockHandler, USERLED);
 
-  /* database init */
-  loadDatabase();
+  /* Init SPIFFS */
+  init_spiffs_db();
 }
 
 void loop()
@@ -52,7 +54,7 @@ void loop()
       {
         databasePage(rotaryEncoder.readEncoder()); // show database
       }
-      rotaryEncoder.setBoundaries(1, 4, false); // update boundaries to db lenght
+      rotaryEncoder.setBoundaries(1, 6, false); // update boundaries to db lenght
     }
   }
 
@@ -63,25 +65,28 @@ void loop()
 
     if (rotaryEncoder.isEncoderButtonClicked())
     {
-      // Serial.println("Command: upload");
-      while (true)
+      uploadHandler = 1;
+    }
+    //  Serial.println("Command: upload");
+    while (uploadHandler == 1)
+    {
+      if (Serial.available() > 0)
       {
-        if (Serial.available() > 0)
+        String message = Serial.readStringUntil('\n');
+        message.trim(); // Remove any trailing whitespace or newline characters
+        if (message == "load")
         {
-          String message = Serial.readStringUntil('\n');
-          message.trim(); // Remove any trailing whitespace or newline characters
-          if (message == "load")
+          Serial.println("data");
+          for (int i = 0; i < DB_LENGTH; i++)
           {
-            Serial.println("data");
-            for (int i = 0; i < DB_LENGTH; i++)
-            {
-              Serial.printf("%s;%s;%s\n", encrypt_data(db.id[i].c_str()).c_str(), encrypt_data(db.username[i].c_str()).c_str(), encrypt_data(db.password[i].c_str()).c_str());
-            }
-            break;
+            Serial.printf("%s;%s;%s\n", encrypt_data(db.id[i].c_str()).c_str(), encrypt_data(db.username[i].c_str()).c_str(), encrypt_data(db.password[i].c_str()).c_str());
           }
+          uploadHandler = 0;
+          break;
         }
       }
     }
+    //}
   }
 
   // DOWNLOAD DATABASE
@@ -90,36 +95,66 @@ void loop()
     menuPage3();
     if (rotaryEncoder.isEncoderButtonClicked())
     {
-      while (true)
+      downloadHandler = 1;
+    }
+    while (downloadHandler == 1)
+    {
+      if (Serial.available() > 0)
       {
-        if (Serial.available() > 0)
+        String message = Serial.readStringUntil('\n');
+        message.trim(); // Remove any trailing whitespace or newline characters
+        if (message == "download")
         {
-          String message = Serial.readStringUntil('\n');
-          message.trim(); // Remove any trailing whitespace or newline characters
-          if (message == "download")
+          // Read the database length from the next line
+          while (Serial.available() == 0)
           {
-            for (int i = 0; i < 6; i++)
-            {
-              while (Serial.available() == 0)
-              {
-                // Wait for data
-              }
-              String dataLine = Serial.readStringUntil('\n');
-              dataLine.trim();                // Remove any trailing whitespace or newline characters
-              parseAndStoreData(dataLine, i); // data are being decrypted in this function
-              dataLine = "";
-            }
-            break;
+            // Wait for data
           }
+          String lengthLine = Serial.readStringUntil('\n');
+          lengthLine.trim();
+          int newDbLength = lengthLine.toInt();
+
+          for (int i = 0; i < newDbLength; i++)
+          {
+            while (Serial.available() == 0)
+            {
+              // Wait for data
+            }
+            String dataLine = Serial.readStringUntil('\n');
+            dataLine.trim();                // Remove any trailing whitespace or newline characters
+            parseAndStoreData(dataLine, i); // data are being decrypted in this function
+            dataLine = "";
+          }
+          downloadHandler = 0;
+          break;
         }
       }
     }
   }
 
-  // SHOW DEVICE INFORMATION
-  else if (rotaryEncoder.readEncoder() == 4) // Settings
+  // SAVE DATABASE
+  else if (rotaryEncoder.readEncoder() == 4) // Save
   {
-    menuPage4();
+    menuPage4(); // You may want a dedicated menu page for Save
+    if (rotaryEncoder.isEncoderButtonClicked())
+    {
+      save_spiffs_db();
+    }
+  }
+
+  // DELETE ALL DATABASE
+  else if (rotaryEncoder.readEncoder() == 5) // Delete All
+  {
+    menuPage5(); // You may want a dedicated menu page for Delete All
+    if (rotaryEncoder.isEncoderButtonClicked())
+    {
+      delete_spiffs_db();
+    }
+  }
+  // SHOW DEVICE INFORMATION
+  else if (rotaryEncoder.readEncoder() == 6) // Settings
+  {
+    menuPage6();
     if (rotaryEncoder.isEncoderButtonClicked())
     {
       while (!rotaryEncoder.isEncoderButtonClicked())

@@ -16,19 +16,15 @@ extern Adafruit_SH1106G display;
 
 /* Instances for main menu images */
 extern const unsigned char epd_bitmap_database[];
-extern const unsigned char epd_bitmap_connect[];
-extern const unsigned char epd_bitmap_settings[];
-extern const unsigned char epd_bitmap_connecting1[];
-extern const unsigned char epd_bitmap_connecting2[];
-extern const unsigned char epd_bitmap_connecting3[];
 extern const unsigned char epd_bitmap_fpsensor[];
 extern const unsigned char epd_bitmap_tick[];
 extern const unsigned char epd_bitmap_tick2[];
 extern const unsigned char epd_bitmap_tick3[];
-extern const unsigned char epd_bitmap_connected_to_app[];
-extern const unsigned char epd_bitmap_disconnected_from_app[];
 extern const unsigned char epd_bitmap_download[];
 extern const unsigned char epd_bitmap_upload[];
+extern const unsigned char epd_bitmap_savedb[];
+extern const unsigned char epd_bitmap_deleteall[];
+extern const unsigned char epd_bitmap_devinfo[];
 
 /* Functions */
 void display_setup();
@@ -42,7 +38,9 @@ void unlockSuccessfull(int ledpin); // Shows tick while authentication passed
 void menuPage1(); // database
 void menuPage2(); // upload
 void menuPage3(); // download
-void menuPage4(); // settings
+void menuPage4(); // save
+void menuPage5(); // delete all
+void menuPage6(); // dev info
 
 /* Connecting page */
 void connectingPage1();

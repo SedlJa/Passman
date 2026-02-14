@@ -207,7 +207,7 @@ class MainWindow(QMainWindow):
             Load database from PassMan device
             Each entry is loaded encrypted - decrpytion is a part of this function
         """
-        self.serial.write(b"load")
+        self.serial.write(b"load\n")
         QtCore.QThread.msleep(100) # Delay in communication
         if self.serial.isOpen():
             try:
@@ -265,8 +265,11 @@ class MainWindow(QMainWindow):
 
         for entry_id in self.entryID:
             self.idList.addItem(entry_id)
-        self.serial.write(b"download\n")
-        
+
+        self.serial.write(b"download\n") # download command
+        db_length = len(self.entryID) # get db length and send it
+        self.serial.write(f"{db_length}\n".encode('utf-8'))
+
         if(self.serial.isOpen()):
             try:
                 # Prepare the database content
@@ -276,10 +279,12 @@ class MainWindow(QMainWindow):
                 
                 database_content = ""
                 for i in range(len(self.entryID)):
-                    database_content += f"{encrypt_data(self.entryID[i])};{encrypt_data(self.entryUSRNAME[i])};{encrypt_data(self.entryPSW[i])}\n"
+                    """+= f"{encrypt_data(self.entryID[i])};{encrypt_data(self.entryUSRNAME[i])};{encrypt_data(self.entryPSW[i])}\n"""
+                    database_content += f"{(self.entryID[i])};{(self.entryUSRNAME[i])};{(self.entryPSW[i])}\n"
                     
                 # Send the database content over the serial port
                 self.serial.write(database_content.encode('utf-8'))
+                self.serial.write("end".encode("utf-8"))
                 print(database_content)
 
             except Exception as e:

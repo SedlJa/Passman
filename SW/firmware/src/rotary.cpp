@@ -22,7 +22,7 @@ void rotary_setup()
 
     // Set boundaries and if values should cycle or not
     bool circleValues = false;
-    rotaryEncoder.setBoundaries(1, 4, circleValues); // minValue, maxValue, circleValues true|false (when max go to min and vice versa)
+    rotaryEncoder.setBoundaries(1, 6, circleValues); // minValue, maxValue, circleValues true|false (when max go to min and vice versa)
     rotaryEncoder.setAcceleration(1);                // Set acceleration factor
 
     // Check if encoder is initialized
