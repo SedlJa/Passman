@@ -20,11 +20,11 @@ available_ports_list = [port.device for port in available_ports]
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        self.setGeometry(500, 350, 740, 400)
+        self.setGeometry(500, 350, 900, 480)
         self.setWindowTitle("PassMan Application")
         self.setWindowIcon(QtGui.QIcon("img/blueSafe.png"))
         # Fix the window size
-        self.setFixedSize(740, 400)
+        self.setFixedSize(900, 480)
         self.initUI()
         
         self.serial = QSerialPort(self)
@@ -34,6 +34,12 @@ class MainWindow(QMainWindow):
         self.entryID = []
         self.entryUSRNAME = []
         self.entryPSW = []
+
+        # device info
+        self.deviceName = ""
+        self.fwVersion = ""
+        self.hwVersion = ""
+        self.serialNumber = ""
         
         # Set background color to dark blue
         palette = self.palette()
@@ -69,70 +75,102 @@ class MainWindow(QMainWindow):
         self.disconnectButton.clicked.connect(self.disconnect_from_port)
         self.disconnectButton.setGeometry(590, 30, 100, 30)
 
+        # --- Device Info Section ---
+        self.deviceInfoGroupBox = QtWidgets.QGroupBox("Device Information", self)
+        self.deviceInfoGroupBox.setGeometry(700, 25, 185, 140)
+        self.deviceInfoGroupBox.setStyleSheet(
+            "QGroupBox { color: white; border: 1px solid #555; border-radius: 5px; margin-top: 10px; padding-top: 10px; }"
+            "QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 5px; }"
+        )
+
+        info_layout = QtWidgets.QVBoxLayout(self.deviceInfoGroupBox)
+        info_layout.setContentsMargins(8, 15, 8, 8)
+        info_layout.setSpacing(4)
+
+        self.deviceNameLabel = QtWidgets.QLabel("Name: N/A")
+        self.deviceNameLabel.setStyleSheet("color: white; font-size: 11px;")
+        info_layout.addWidget(self.deviceNameLabel)
+
+        self.fwVersionLabel = QtWidgets.QLabel("FW: N/A")
+        self.fwVersionLabel.setStyleSheet("color: white; font-size: 11px;")
+        info_layout.addWidget(self.fwVersionLabel)
+
+        self.hwVersionLabel = QtWidgets.QLabel("HW: N/A")
+        self.hwVersionLabel.setStyleSheet("color: white; font-size: 11px;")
+        info_layout.addWidget(self.hwVersionLabel)
+
+        self.serialNumberLabel = QtWidgets.QLabel("SN: N/A")
+        self.serialNumberLabel.setStyleSheet("color: white; font-size: 11px;")
+        info_layout.addWidget(self.serialNumberLabel)
+
+        self.connectionStatusLabel = QtWidgets.QLabel("Status: Disconnected")
+        self.connectionStatusLabel.setStyleSheet("color: #ff6666; font-size: 11px; font-weight: bold;")
+        info_layout.addWidget(self.connectionStatusLabel)
+
         # Load password database
         self.loadDBButton = QtWidgets.QPushButton(self)
         self.loadDBButton.setText("Load DB")
         self.loadDBButton.clicked.connect(self.load_database)
-        self.loadDBButton.move(590, 95)
+        self.loadDBButton.setGeometry(750, 180, 100, 30)
 
         # Upload database to device
         self.uploadDBButton = QtWidgets.QPushButton(self)
         self.uploadDBButton.setText("Upload DB")
         self.uploadDBButton.clicked.connect(self.upload_database)
-        self.uploadDBButton.move(590, 125)
+        self.uploadDBButton.setGeometry(750, 215, 100, 30)
 
         # Add button to add a new entry
         self.addEntryButton = QtWidgets.QPushButton(self)
         self.addEntryButton.setText("Add Entry")
         self.addEntryButton.clicked.connect(self.add_entry)
-        self.addEntryButton.move(590, 155)
+        self.addEntryButton.setGeometry(750, 250, 100, 30)
 
         # Edit button to edit username of entry
         self.editDBButton = QtWidgets.QPushButton(self)
         self.editDBButton.setText("Edit Entry")
         self.editDBButton.clicked.connect(self.edit_entry)
-        self.editDBButton.move(590, 185)
+        self.editDBButton.setGeometry(750, 285, 100, 30)
 
         # Delete button to delete ENTRIES
         self.deleteEntryButton = QtWidgets.QPushButton(self)
         self.deleteEntryButton.setText("Delete Entry")
         self.deleteEntryButton.clicked.connect(self.delete_entry)
-        self.deleteEntryButton.setGeometry(590, 215, 100, 30)
+        self.deleteEntryButton.setGeometry(750, 320, 100, 30)
 
         # Button to delete ENTIRE database
         self.deleteDBButton = QtWidgets.QPushButton(self)
         self.deleteDBButton.setText("Delete ALL")
         self.deleteDBButton.clicked.connect(self.delete_database)
-        self.deleteDBButton.setGeometry(590, 245, 100, 30)
+        self.deleteDBButton.setGeometry(750, 355, 100, 30)
 
         # Toggle button - password visibility
         self.togglePasswordButton = QtWidgets.QPushButton(self)
         self.togglePasswordButton.setText("PSW Visibility")
         self.togglePasswordButton.clicked.connect(self.toggle_password_visibility)
-        self.togglePasswordButton.setGeometry(590, 275, 100, 30)
+        self.togglePasswordButton.setGeometry(750, 390, 100, 30)
 
         # Generator button
         self.generatorButton = QtWidgets.QPushButton(self)
         self.generatorButton.setText("Generate PSW")
         self.generatorButton.clicked.connect(self.generate_password)
-        self.generatorButton.setGeometry(590, 305, 100, 30)
+        self.generatorButton.setGeometry(750, 425, 100, 30)
 
         # Lists for database entries
         self.idList = QtWidgets.QListWidget(self)
         self.idList.setStyleSheet("background-color: #040330; color: white;")
-        self.idList.setGeometry(45, 95, 100, 270)
+        self.idList.setGeometry(45, 95, 100, 360)
         self.idList.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
         self.idList.setFont(QtGui.QFont("Courier", 11))  # Use a monospaced font for alignment
 
         self.usernameList = QtWidgets.QListWidget(self)
         self.usernameList.setStyleSheet("background-color: #040330; color: white;")
-        self.usernameList.setGeometry(150, 95, 200, 270)
+        self.usernameList.setGeometry(150, 95, 270, 360)
         self.usernameList.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
         self.usernameList.setFont(QtGui.QFont("Courier", 11))  # Use a monospaced font for alignment
 
         self.passwordList = QtWidgets.QListWidget(self)
         self.passwordList.setStyleSheet("background-color: #040330; color: white;")
-        self.passwordList.setGeometry(355, 95, 225, 270)
+        self.passwordList.setGeometry(425, 95, 310, 360)
         self.passwordList.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
         self.passwordList.setFont(QtGui.QFont("Courier", 11))  # Use a monospaced font for alignment
 
@@ -145,12 +183,28 @@ class MainWindow(QMainWindow):
         self.usernameLabel = QtWidgets.QLabel(self)
         self.usernameLabel.setText("USERNAME:")
         self.usernameLabel.setStyleSheet("background-color: #040330; color: white; border-bottom: 1px solid white;")
-        self.usernameLabel.setGeometry(150, 75, 200, 20)
+        self.usernameLabel.setGeometry(150, 75, 270, 20)
 
         self.passwordLabel = QtWidgets.QLabel(self)
         self.passwordLabel.setText("PASSWORD:")
         self.passwordLabel.setStyleSheet("background-color: #040330; color: white; border-bottom: 1px solid white;")
-        self.passwordLabel.setGeometry(355, 75, 225, 20)
+        self.passwordLabel.setGeometry(425, 75, 310, 20)
+
+    def update_device_info_display(self):
+        """
+            Update the device info labels with current device information
+        """
+        self.deviceNameLabel.setText(f"Name: {self.deviceName or 'N/A'}")
+        self.fwVersionLabel.setText(f"FW: {self.fwVersion or 'N/A'}")
+        self.hwVersionLabel.setText(f"HW: {self.hwVersion or 'N/A'}")
+        self.serialNumberLabel.setText(f"SN: {self.serialNumber or 'N/A'}")
+
+        if self.deviceConnected:
+            self.connectionStatusLabel.setText("Status: Connected")
+            self.connectionStatusLabel.setStyleSheet("color: #66ff66; font-size: 11px; font-weight: bold;")
+        else:
+            self.connectionStatusLabel.setText("Status: Disconnected")
+            self.connectionStatusLabel.setStyleSheet("color: #ff6666; font-size: 11px; font-weight: bold;")
 
     def search_com_ports(self):
         """
@@ -178,7 +232,27 @@ class MainWindow(QMainWindow):
 
             if self.serial.open(QIODevice.OpenModeFlag.ReadWrite):
                 QtWidgets.QMessageBox.information(self, "Connection", f"Connected to {selected_port}")
+
+                # Read device information
+                QtCore.QThread.msleep(100)  # Allow some time for the device to send data
+                data = self.serial.readAll().data().decode('utf-8')
+                lines = data.strip().split('\n')
+                for line in lines:
+                    if line.startswith("Name: "):
+                        self.deviceName = line.split("Name: ")[1].strip()
+                    elif line.startswith("FW: "):
+                        self.fwVersion = line.split("FW: ")[1].strip()
+                    elif line.startswith("HW: "):
+                        self.hwVersion = line.split("HW: ")[1].strip()
+                    elif line.startswith("SN: "):
+                        self.serialNumber = line.split("SN: ")[1].strip()
+
+                # Update the device info section in the UI
+                self.update_device_info_display()
+
             else:
+                self.deviceConnected = False
+                self.update_device_info_display()
                 QtWidgets.QMessageBox.critical(self, "Error", f"Failed to connect to {selected_port}")
 
     def disconnect_from_port(self):
@@ -187,20 +261,32 @@ class MainWindow(QMainWindow):
         """
         if self.serial.isOpen():
             # Send "disconnect" command
-            # Clear database for enhanced security, while device is disconnected
+            self.serial.write(b"disconnect\n")
+            QtCore.QThread.msleep(200)  # Add a delay to ensure the command is processed
+            
+            
+            # Clear database for enhanced security while the device is disconnected
             self.entryID.clear()
             self.entryUSRNAME.clear()
             self.entryPSW.clear()
             self.idList.clear()
             self.usernameList.clear()
             self.passwordList.clear()
-            self.serial.write(b"disconnect")
+            
             # Device connection handler
             self.deviceConnected = False
-            # Close serial
+
+            # Clear device info
+            self.deviceName = ""
+            self.fwVersion = ""
+            self.hwVersion = ""
+            self.serialNumber = ""
+            self.update_device_info_display()
+            
             QtWidgets.QMessageBox.information(self, "Disconnection", "Disconnected from the serial port")
         else:
             QtWidgets.QMessageBox.warning(self, "Warning", "Serial port is not open")
+        self.serial.close()
         
     def load_database(self):
         """
@@ -208,7 +294,7 @@ class MainWindow(QMainWindow):
             Each entry is loaded encrypted - decrpytion is a part of this function
         """
         self.serial.write(b"load\n")
-        QtCore.QThread.msleep(100) # Delay in communication
+        
         if self.serial.isOpen():
             try:
                 data = self.serial.readAll().data().decode('utf-8')
@@ -222,7 +308,7 @@ class MainWindow(QMainWindow):
                             entryID = parts[0].strip()
                             entryUSRNAME = parts[1].strip()
                             entryPSW = parts[2].strip()
-                            #print(f"ID: {entryID}, Username: {entryUSRNAME}, Password: {entryPSW}")
+                            print(f"ID: {entryID}, Username: {entryUSRNAME}, Password: {entryPSW}")
 
                             # Decode the base64-encoded strings and decrypt them
                             entryID = decrypt_data((entryID))

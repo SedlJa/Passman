@@ -29,5 +29,6 @@ void load_db_from_file(void);
 void db_update(int target_id, const char *newusername, const char *newpassword);
 void save_spiffs_db(void);
 void delete_spiffs_db(void);
+int updateDbLength();
 
 #endif // DATABASE_H

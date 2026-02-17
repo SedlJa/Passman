@@ -253,3 +253,21 @@ void delete_spiffs_db()
   digitalWrite(13, LOW);
   Serial.println("SPIFFS database deleted.");
 }
+
+int updateDbLength()
+{
+  FILE *f = fopen("/spiffs/db.txt", "r");
+  if (!f)
+    return 0;
+
+  int lineCount = 0;
+  char line[128];
+
+  while (fgets(line, sizeof(line), f))
+  {
+    lineCount++;
+  }
+
+  fclose(f);
+  return lineCount;
+}

@@ -15,6 +15,7 @@ int unlockHandler = 0;     // Handles authentication
 int uploadHandler = 0;     // Handles upload action
 int connectionHandler = 0; // Handles connection to the app
 int downloadHandler = 0;   // Handles download action
+int dbLength = 0;          // Updates database legth
 
 void setup()
 {
@@ -35,6 +36,9 @@ void setup()
 
   /* Init SPIFFS */
   init_spiffs_db();
+
+  /* update db length */
+  dbLength = updateDbLength();
 }
 
 void loop()
@@ -45,7 +49,7 @@ void loop()
     menuPage1();
     if (rotaryEncoder.isEncoderButtonClicked(300))
     {
-      rotaryEncoder.setBoundaries(0, DB_LENGTH - 1, false); // update boundaries to db lenght
+      rotaryEncoder.setBoundaries(0, dbLength - 1, false); // update boundaries to db lenght
       rotaryEncoder.setEncoderValue(0);
       while (!rotaryEncoder.isEncoderButtonClicked())
       {
@@ -60,60 +64,103 @@ void loop()
   {
     menuPage2();
 
-    if (rotaryEncoder.isEncoderButtonClicked())
+    if (rotaryEncoder.isEncoderButtonClicked(300)) // When encoder is clicked
     {
-      connectionHandler = 1;
-    }
-    //  Serial.println("Command: upload");
-    while (connectionHandler == 1)
-    {
-      digitalWrite(USERLED, HIGH);
-      // load command
-      if (Serial.available() > 0)
+      // Open the JSON file
+      FILE *file = fopen("/spiffs/device.json", "r");
+      if (!file)
       {
-        String message = Serial.readStringUntil('\n');
-        message.trim(); // Remove any trailing whitespace or newline characters
-        if (message == "load")
-        {
-          Serial.println("data");
-          for (int i = 0; i < DB_LENGTH; i++)
-          {
-            Serial.printf("%s;%s;%s\n", encrypt_data(db.id[i].c_str()).c_str(), encrypt_data(db.username[i].c_str()).c_str(), encrypt_data(db.password[i].c_str()).c_str());
-          }
-          connectionHandler = 0;
-          digitalWrite(USERLED, LOW);
-          break;
-        }
-        // Download command
-        else if (message == "download")
-        {
-          // Read the database length from the next line
-          while (Serial.available() == 0)
-          {
-            // Wait for data
-          }
-          String lengthLine = Serial.readStringUntil('\n');
-          lengthLine.trim();
-          int newDbLength = lengthLine.toInt();
+        Serial.println("Failed to open device.json");
+        return;
+      }
 
-          for (int i = 0; i < newDbLength; i++)
+      // Read the file into a buffer
+      char buffer[256];
+      size_t bytesRead = fread(buffer, 1, sizeof(buffer) - 1, file);
+      buffer[bytesRead] = '\0'; // Null-terminate the buffer
+      fclose(file);
+
+      // Parse the JSON data
+      StaticJsonDocument<512> doc;
+      DeserializationError error = deserializeJson(doc, buffer);
+      if (error)
+      {
+        Serial.print("Failed to parse JSON: ");
+        Serial.println(error.c_str());
+        return;
+      }
+
+      // Extract device information
+      JsonObject deviceInfo = doc["deviceInfo"];
+      const char *deviceName = deviceInfo["device Name"];
+      const char *fwVersion = deviceInfo["FW Version"];
+      const char *hwVersion = deviceInfo["HW Version"];
+      const char *serialNumber = deviceInfo["SN"];
+
+      // Send device information to the app
+      Serial.println("Device Information:");
+      Serial.println((String) "Name: " + deviceName);
+      Serial.println((String) "FW: " + fwVersion);
+      Serial.println((String) "HW: " + hwVersion);
+      Serial.println((String) "SN: " + serialNumber);
+
+      // Turn on USER LED to indicate connection
+      connectionHandler = 1;
+      digitalWrite(USERLED, HIGH);
+      //  Serial.println("Command: upload");
+      while (connectionHandler == 1)
+      {
+        digitalWrite(USERLED, HIGH);
+        // load command
+        if (Serial.available() > 0)
+        {
+          String message = Serial.readStringUntil('\n');
+          message.trim(); // Remove any trailing whitespace or newline characters
+          if (message == "load")
           {
+            Serial.println("data");
+            for (int i = 0; i < dbLength; i++)
+            {
+              Serial.printf("%s;%s;%s\n", encrypt_data(db.id[i].c_str()).c_str(), encrypt_data(db.username[i].c_str()).c_str(), encrypt_data(db.password[i].c_str()).c_str());
+            }
+          }
+          // Download command
+          else if (message == "download")
+          {
+            // Read the database length from the next line
             while (Serial.available() == 0)
             {
               // Wait for data
             }
-            String dataLine = Serial.readStringUntil('\n');
-            dataLine.trim();                // Remove any trailing whitespace or newline characters
-            parseAndStoreData(dataLine, i); // data are being decrypted in this function
-            dataLine = "";
+            String lengthLine = Serial.readStringUntil('\n');
+            lengthLine.trim();
+            int newDbLength = lengthLine.toInt();
+            dbLength = newDbLength; // update db length
+
+            for (int i = 0; i < newDbLength; i++)
+            {
+              while (Serial.available() == 0)
+              {
+                // Wait for data
+              }
+              String dataLine = Serial.readStringUntil('\n');
+              dataLine.trim();                // Remove any trailing whitespace or newline characters
+              parseAndStoreData(dataLine, i); // data are being decrypted in this function
+              dataLine = "";
+            }
           }
-          connectionHandler = 0;
-          digitalWrite(USERLED, LOW);
-          break;
+          // Handle "disconnect" command
+          else if (message == "disconnect")
+          {
+            connectionHandler = 0;
+            Serial.println("Disconnected from app.");
+            digitalWrite(USERLED, LOW); // Turn off USER LED
+            break;
+          }
         }
       }
+      //}
     }
-    //}
   }
 
   // DOWNLOAD DATABASE
