@@ -20,11 +20,11 @@ available_ports_list = [port.device for port in available_ports]
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        self.setGeometry(500, 350, 900, 480)
+        self.setGeometry(300, 200, 1100, 520)
         self.setWindowTitle("PassMan Application")
         self.setWindowIcon(QtGui.QIcon("img/blueSafe.png"))
         # Fix the window size
-        self.setFixedSize(900, 480)
+        self.setFixedSize(1050, 520)
         self.initUI()
         
         self.serial = QSerialPort(self)
@@ -77,7 +77,7 @@ class MainWindow(QMainWindow):
 
         # --- Device Info Section ---
         self.deviceInfoGroupBox = QtWidgets.QGroupBox("Device Information", self)
-        self.deviceInfoGroupBox.setGeometry(700, 25, 185, 140)
+        self.deviceInfoGroupBox.setGeometry(800, 75, 200, 140)
         self.deviceInfoGroupBox.setStyleSheet(
             "QGroupBox { color: white; border: 1px solid #555; border-radius: 5px; margin-top: 10px; padding-top: 10px; }"
             "QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 5px; }"
@@ -107,72 +107,76 @@ class MainWindow(QMainWindow):
         self.connectionStatusLabel.setStyleSheet("color: #ff6666; font-size: 11px; font-weight: bold;")
         info_layout.addWidget(self.connectionStatusLabel)
 
+        # Right-side button X position
+        btn_x = 800
+        btn_width = 200
+
         # Load password database
         self.loadDBButton = QtWidgets.QPushButton(self)
         self.loadDBButton.setText("Load DB")
         self.loadDBButton.clicked.connect(self.load_database)
-        self.loadDBButton.setGeometry(750, 180, 100, 30)
+        self.loadDBButton.setGeometry(btn_x, 225, btn_width, 30)
 
         # Upload database to device
         self.uploadDBButton = QtWidgets.QPushButton(self)
         self.uploadDBButton.setText("Upload DB")
         self.uploadDBButton.clicked.connect(self.upload_database)
-        self.uploadDBButton.setGeometry(750, 215, 100, 30)
+        self.uploadDBButton.setGeometry(btn_x, 260, btn_width, 30)
 
         # Add button to add a new entry
         self.addEntryButton = QtWidgets.QPushButton(self)
         self.addEntryButton.setText("Add Entry")
         self.addEntryButton.clicked.connect(self.add_entry)
-        self.addEntryButton.setGeometry(750, 250, 100, 30)
+        self.addEntryButton.setGeometry(btn_x, 295, btn_width, 30)
 
         # Edit button to edit username of entry
         self.editDBButton = QtWidgets.QPushButton(self)
         self.editDBButton.setText("Edit Entry")
         self.editDBButton.clicked.connect(self.edit_entry)
-        self.editDBButton.setGeometry(750, 285, 100, 30)
+        self.editDBButton.setGeometry(btn_x, 330, btn_width, 30)
 
         # Delete button to delete ENTRIES
         self.deleteEntryButton = QtWidgets.QPushButton(self)
         self.deleteEntryButton.setText("Delete Entry")
         self.deleteEntryButton.clicked.connect(self.delete_entry)
-        self.deleteEntryButton.setGeometry(750, 320, 100, 30)
+        self.deleteEntryButton.setGeometry(btn_x, 365, btn_width, 30)
 
         # Button to delete ENTIRE database
         self.deleteDBButton = QtWidgets.QPushButton(self)
         self.deleteDBButton.setText("Delete ALL")
         self.deleteDBButton.clicked.connect(self.delete_database)
-        self.deleteDBButton.setGeometry(750, 355, 100, 30)
+        self.deleteDBButton.setGeometry(btn_x, 400, btn_width, 30)
 
         # Toggle button - password visibility
         self.togglePasswordButton = QtWidgets.QPushButton(self)
         self.togglePasswordButton.setText("PSW Visibility")
         self.togglePasswordButton.clicked.connect(self.toggle_password_visibility)
-        self.togglePasswordButton.setGeometry(750, 390, 100, 30)
+        self.togglePasswordButton.setGeometry(btn_x, 435, btn_width, 30)
 
         # Generator button
         self.generatorButton = QtWidgets.QPushButton(self)
         self.generatorButton.setText("Generate PSW")
         self.generatorButton.clicked.connect(self.generate_password)
-        self.generatorButton.setGeometry(750, 425, 100, 30)
+        self.generatorButton.setGeometry(btn_x, 470, btn_width, 30)
 
         # Lists for database entries
         self.idList = QtWidgets.QListWidget(self)
         self.idList.setStyleSheet("background-color: #040330; color: white;")
-        self.idList.setGeometry(45, 95, 100, 360)
+        self.idList.setGeometry(45, 95, 100, 400)
         self.idList.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
-        self.idList.setFont(QtGui.QFont("Courier", 11))  # Use a monospaced font for alignment
+        self.idList.setFont(QtGui.QFont("Courier", 11))
 
         self.usernameList = QtWidgets.QListWidget(self)
         self.usernameList.setStyleSheet("background-color: #040330; color: white;")
-        self.usernameList.setGeometry(150, 95, 270, 360)
+        self.usernameList.setGeometry(150, 95, 300, 400)
         self.usernameList.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
-        self.usernameList.setFont(QtGui.QFont("Courier", 11))  # Use a monospaced font for alignment
+        self.usernameList.setFont(QtGui.QFont("Courier", 11))
 
         self.passwordList = QtWidgets.QListWidget(self)
         self.passwordList.setStyleSheet("background-color: #040330; color: white;")
-        self.passwordList.setGeometry(425, 95, 310, 360)
+        self.passwordList.setGeometry(455, 95, 340, 400)
         self.passwordList.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
-        self.passwordList.setFont(QtGui.QFont("Courier", 11))  # Use a monospaced font for alignment
+        self.passwordList.setFont(QtGui.QFont("Courier", 11))
 
         # Labels for the entries list
         self.idLabel = QtWidgets.QLabel(self)
@@ -183,12 +187,12 @@ class MainWindow(QMainWindow):
         self.usernameLabel = QtWidgets.QLabel(self)
         self.usernameLabel.setText("USERNAME:")
         self.usernameLabel.setStyleSheet("background-color: #040330; color: white; border-bottom: 1px solid white;")
-        self.usernameLabel.setGeometry(150, 75, 270, 20)
+        self.usernameLabel.setGeometry(150, 75, 300, 20)
 
         self.passwordLabel = QtWidgets.QLabel(self)
         self.passwordLabel.setText("PASSWORD:")
         self.passwordLabel.setStyleSheet("background-color: #040330; color: white; border-bottom: 1px solid white;")
-        self.passwordLabel.setGeometry(425, 75, 310, 20)
+        self.passwordLabel.setGeometry(455, 75, 340, 20)
 
     def update_device_info_display(self):
         """

@@ -256,6 +256,7 @@ void delete_spiffs_db()
 
 int updateDbLength()
 {
+  /* Count length */
   FILE *f = fopen("/spiffs/db.txt", "r");
   if (!f)
     return 0;
