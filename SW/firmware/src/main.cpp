@@ -149,6 +149,16 @@ void loop()
               dataLine = "";
             }
           }
+          // Handle info command
+          else if (message == "info")
+          {
+            // Send device information to the app
+            Serial.println("Device Information:");
+            Serial.println((String) "Name: " + deviceName);
+            Serial.println((String) "FW: " + fwVersion);
+            Serial.println((String) "HW: " + hwVersion);
+            Serial.println((String) "SN: " + serialNumber);
+          }
           // Handle "disconnect" command
           else if (message == "disconnect")
           {
