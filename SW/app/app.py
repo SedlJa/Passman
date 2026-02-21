@@ -81,12 +81,11 @@ class MainWindow(QMainWindow):
         for port in reversed(available_ports_list):
             self.comPortDropdown.addItem(port)
 
-        # Connect button
-        self.connectButton = QtWidgets.QPushButton(self)
-        self.connectButton.setText("Connect")
-        self.connectButton.clicked.connect(self.connect_to_port)
-        self.connectButton.setGeometry(480, 30, 100, 30)
-        self.connectButton.setStyleSheet("""
+        # Toggle Connect/Disconnect button
+        self.toggleConnectButton = QtWidgets.QPushButton(self)
+        self.toggleConnectButton.setText("Connect")
+        self.toggleConnectButton.setGeometry(480, 30, 100, 30)
+        self.toggleConnectButton.setStyleSheet("""
             QPushButton {
             background-color: #0b6623; /* Dark green */
             color: white;
@@ -99,23 +98,7 @@ class MainWindow(QMainWindow):
             }
         """)
 
-        # Disconnect button
-        self.disconnectButton = QtWidgets.QPushButton(self)
-        self.disconnectButton.setText("Disconnect")
-        self.disconnectButton.clicked.connect(self.disconnect_from_port)
-        self.disconnectButton.setGeometry(590, 30, 100, 30)
-        self.disconnectButton.setStyleSheet("""
-            QPushButton {
-            background-color: #7d1010;
-            color: white;
-            border: none;
-            border-radius: 8px; /* Makes the button rounded */
-            font-weight: bold;
-            }
-            QPushButton:hover {
-            background-color: darkred; /* Darker red on hover */
-            }
-        """)
+        self.toggleConnectButton.clicked.connect(self.toggle_connection)
 
         # --- Device Info Section ---
         self.deviceInfoGroupBox = QtWidgets.QGroupBox("Device Information", self)
@@ -843,6 +826,41 @@ class MainWindow(QMainWindow):
         else:
             QtWidgets.QMessageBox.warning(self, "Warning", "Serial port is not open")
 
+    def toggle_connection(self):
+            """
+                Toggle between connecting and disconnecting the serial port
+            """
+            if not self.deviceConnected:
+                self.connect_to_port()
+                if self.deviceConnected:
+                    self.toggleConnectButton.setText("Disconnect")
+                    self.toggleConnectButton.setStyleSheet("""
+                        QPushButton {
+                        background-color: #7d1010; /* Red */
+                        color: white;
+                        border: none;
+                        border-radius: 5px; /* Makes the button rounded */
+                        font-weight: bold;
+                        }
+                        QPushButton:hover {
+                        background-color: darkred; /* Darker red on hover */
+                        }
+                    """)
+            else:
+                self.disconnect_from_port()
+                self.toggleConnectButton.setText("Connect")
+                self.toggleConnectButton.setStyleSheet("""
+                QPushButton {
+                background-color: #0b6623; /* Dark green */
+                color: white;
+                border: none;
+                border-radius: 5px; /* Makes the button rounded */
+                font-weight: bold;
+                }
+                QPushButton:hover {
+                background-color: #065e1f; /* Even darker green on hover */
+                }
+                """)
 def Window():
     app = QApplication(sys.argv)
     win = MainWindow()
