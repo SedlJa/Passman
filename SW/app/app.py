@@ -122,8 +122,8 @@ class MainWindow(QMainWindow):
         self.deviceInfoGroupBox = QtWidgets.QGroupBox("Device Information", self)
         self.deviceInfoGroupBox.setGeometry(800, 75, 200, 140)
         self.deviceInfoGroupBox.setStyleSheet(
-            "QGroupBox { background-color: #1b2038; color: white; border: 1px solid #555; border-radius: 5px; margin-top: 10px; padding-top: 10px; }"
-            "QGroupBox::title { subcontrol-origin: margin; left: 0px; padding: 5px 42px; background-color: #2f3654; color: white; border-radius: 5px; }"
+            "QGroupBox { background-color: #1b2038; color: white; border: 1px solid #555; border-radius: 5px; margin-top: 10px; padding-top: 10px; font-weight: bold; }"
+            "QGroupBox::title { subcontrol-origin: margin; left: 0px; padding: 5px 42px; background-color: #2f3654; color: white; border-radius: 5px; font-weight: bold; }"
         )
         info_layout = QtWidgets.QVBoxLayout(self.deviceInfoGroupBox)
         info_layout.setContentsMargins(8, 15, 8, 8)
@@ -177,8 +177,8 @@ class MainWindow(QMainWindow):
         self.databaseGroupBox = QtWidgets.QGroupBox("Database", self)
         self.databaseGroupBox.setGeometry(btn_x, 220, btn_width, 165)
         self.databaseGroupBox.setStyleSheet(
-            "QGroupBox { background-color: #1b2038; color: white; border: 1px solid #555; border-radius: 5px; margin-top: 10px; padding-top: 10px; }"
-            "QGroupBox::title { subcontrol-origin: margin; left: 0px; padding: 5px 70px; background-color: #2f3654; color: white; border-radius: 5px; }"
+            "QGroupBox { background-color: #1b2038; color: white; border: 1px solid #555; border-radius: 5px; margin-top: 10px; padding-top: 10px; font-weight: bold; }"
+            "QGroupBox::title { subcontrol-origin: margin; left: 0px; padding: 5px 70px; background-color: #2f3654; color: white; border-radius: 5px; font-weight: bold; }"
         )
 
         db_layout = QtWidgets.QVBoxLayout(self.databaseGroupBox)
@@ -260,7 +260,7 @@ class MainWindow(QMainWindow):
         self.dangerZoneGroupBox.setGeometry(btn_x, 390, btn_width, 100)
         self.dangerZoneGroupBox.setStyleSheet(
             "QGroupBox { background-color: #1b2038; color: white; border: 1px solid #555; border-radius: 5px; margin-top: 10px; padding-top: 10px; }"
-            "QGroupBox::title { subcontrol-origin: margin; left: 0px; padding: 5px 59px; background-color: #7d1010; color: white; border-radius: 5px; }"
+            "QGroupBox::title { subcontrol-origin: margin; left: 0px; padding: 5px 59px; background-color: #7d1010; color: white; border-radius: 5px; font-weight: bold; }"
         )
 
         danger_layout = QtWidgets.QVBoxLayout(self.dangerZoneGroupBox)
@@ -343,17 +343,17 @@ class MainWindow(QMainWindow):
         # Labels for the entries list
         self.idLabel = QtWidgets.QLabel(self)
         self.idLabel.setText("ID:")
-        self.idLabel.setStyleSheet("background-color: #2f3654; color: white; border-bottom: 1px solid white;")
+        self.idLabel.setStyleSheet("QLabel { background-color: #2f3654; color: white; padding: 5px; border: 0px solid #555; border-radius: 5px; }")
         self.idLabel.setGeometry(45, 75, 100, 20)
 
         self.usernameLabel = QtWidgets.QLabel(self)
         self.usernameLabel.setText("USERNAME:")
-        self.usernameLabel.setStyleSheet("background-color: #2f3654; color: white; border-bottom: 1px solid white;")
+        self.usernameLabel.setStyleSheet("QLabel { background-color: #2f3654; color: white; padding: 5px; border: 0px solid #555; border-radius: 5px; }")
         self.usernameLabel.setGeometry(150, 75, 300, 20)
 
         self.passwordLabel = QtWidgets.QLabel(self)
         self.passwordLabel.setText("PASSWORD:")
-        self.passwordLabel.setStyleSheet("background-color: #2f3654; color: white; border-bottom: 1px solid white;")
+        self.passwordLabel.setStyleSheet("QLabel { background-color: #2f3654; color: white; padding: 5px; border: 0px solid #555; border-radius: 5px; }")
         self.passwordLabel.setGeometry(455, 75, 340, 20)
 
     def update_device_info_display(self):
