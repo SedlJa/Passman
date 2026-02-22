@@ -97,8 +97,26 @@ class MainWindow(QMainWindow):
             background-color: #065e1f; /* Even darker green on hover */
             }
         """)
-
         self.toggleConnectButton.clicked.connect(self.toggle_connection)
+
+        # Eye icon button for toggling password visibility
+        self.eyeIconButton = QtWidgets.QPushButton(self)
+        eye_icon = QtGui.QIcon("img/eye.png")  # Assuming you have an eye icon at this path
+        self.eyeIconButton.setIcon(eye_icon)
+        self.eyeIconButton.setIconSize(QtCore.QSize(20, 20))  # Scale the icon to 20x20 pixels
+        self.eyeIconButton.setToolTip("Toggle Password Visibility")
+        self.eyeIconButton.setGeometry(590, 30, 30, 30)
+        self.eyeIconButton.setStyleSheet("""
+            QPushButton {
+            background-color: #2f3654;
+            border: none;
+            border-radius: 5px;
+            }
+            QPushButton:hover {
+            background-color: #1c86ee;
+            }
+        """)
+        self.eyeIconButton.clicked.connect(self.toggle_password_visibility)
 
         # --- Device Info Section ---
         self.deviceInfoGroupBox = QtWidgets.QGroupBox("Device Information", self)
@@ -157,7 +175,7 @@ class MainWindow(QMainWindow):
 
         # --- Database Section ---
         self.databaseGroupBox = QtWidgets.QGroupBox("Database", self)
-        self.databaseGroupBox.setGeometry(btn_x, 220, btn_width, 140)
+        self.databaseGroupBox.setGeometry(btn_x, 220, btn_width, 165)
         self.databaseGroupBox.setStyleSheet(
             "QGroupBox { background-color: #1b2038; color: white; border: 1px solid #555; border-radius: 5px; margin-top: 10px; padding-top: 10px; }"
             "QGroupBox::title { subcontrol-origin: margin; left: 0px; padding: 5px 70px; background-color: #2f3654; color: white; border-radius: 5px; }"
@@ -239,7 +257,7 @@ class MainWindow(QMainWindow):
 
         # --- Danger Zone Section ---
         self.dangerZoneGroupBox = QtWidgets.QGroupBox("Danger Zone", self)
-        self.dangerZoneGroupBox.setGeometry(btn_x, 365, btn_width, 100)
+        self.dangerZoneGroupBox.setGeometry(btn_x, 390, btn_width, 100)
         self.dangerZoneGroupBox.setStyleSheet(
             "QGroupBox { background-color: #1b2038; color: white; border: 1px solid #555; border-radius: 5px; margin-top: 10px; padding-top: 10px; }"
             "QGroupBox::title { subcontrol-origin: margin; left: 0px; padding: 5px 59px; background-color: #7d1010; color: white; border-radius: 5px; }"
@@ -284,24 +302,6 @@ class MainWindow(QMainWindow):
             }
         """)
         danger_layout.addWidget(self.deleteDBButton)
-
-        # Toggle button - password visibility
-        self.togglePasswordButton = QtWidgets.QPushButton(self)
-        self.togglePasswordButton.setText("Toggle Visibility")
-        self.togglePasswordButton.clicked.connect(self.toggle_password_visibility)
-        self.togglePasswordButton.setGeometry(btn_x, 475, btn_width, 20)
-        self.togglePasswordButton.setStyleSheet("""
-            QPushButton {
-            background-color: #2f3654;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            }
-            QPushButton:hover {
-            background-color: #1c86ee;
-            }
-        """)
 
         # Generator button
         self.generatorButton = QtWidgets.QPushButton(self.databaseGroupBox)
