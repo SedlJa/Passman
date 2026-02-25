@@ -30,6 +30,7 @@ extern const unsigned char epd_bitmap_devinfo[];
 extern const unsigned char epd_bitmap_connect[];
 
 /* Functions */
+int getBatteryLevelPercentage(int pin);
 void display_setup();
 void test_print(int rotaryVal);
 

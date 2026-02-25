@@ -22,6 +22,10 @@ void setup()
   Serial.begin(BAUDRATE);
   /* User LED setup */
   pinMode(USERLED, OUTPUT);
+
+  /* Battery level setup */
+  pinMode(3, INPUT);
+
   /* Rotary encoder init */
   rotary_setup();
 

@@ -7,11 +7,29 @@
 #define DISPLAYI2C_ADDR 0x3C
 #define DISPLAYWIDTH 128
 #define DISPLAYHEIGH 64
+#define BATT_LVL 3 // battery level read pin
 
 /* Create diplay instance */
 Adafruit_SH1106G display = Adafruit_SH1106G(DISPLAYWIDTH, DISPLAYHEIGH, &Wire, -1);
 
 /* Functions */
+
+/* Battery lvl function */
+int getBatteryLevelPercentage(int pin)
+{
+    int raw = analogRead(BATT_LVL);
+
+    float v = (raw / 4095.0) * 3.3;
+
+    // kompenzace děliče
+    v *= 2.0;
+
+    // Convert voltage to percentage
+    float percentage = (v - 3.0) / (4.2 - 3.0) * 100.0; // Assuming 3.0V is 0% and 4.2V is 100%
+    percentage = constrain(percentage, 0.0, 100.0);     // Clamp the value between 0% and 100%
+
+    return percentage;
+}
 
 /**
  * @brief function that setups OLED display
@@ -258,6 +276,7 @@ void deviceInfo()
     display.println((String) "FW Ver:  " + fwVersion);
     display.println((String) "HW Ver:  " + hwVersion);
     display.println((String) "SN:      " + serialNumber);
+    display.println((String) "Battery: " + getBatteryLevelPercentage(BATT_LVL) + " %");
     display.display();
 }
 // 'database', 128x64px
