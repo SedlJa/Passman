@@ -4,6 +4,7 @@
 #include "fpcheck.h"
 #include "database.h"
 #include "encryption.h"
+#include "authentication.h"
 
 #define BAUDRATE 115200
 #define USERLED 13 // blue user led definition
@@ -11,7 +12,8 @@
 /* HELLO */
 
 /* Global variables */
-int unlockHandler = 0;     // Handles authentication
+int unlockHandler = 0; // Handles authentication
+int fails = 0;
 int uploadHandler = 0;     // Handles upload action
 int connectionHandler = 0; // Handles connection to the app
 int downloadHandler = 0;   // Handles download action
@@ -35,8 +37,10 @@ void setup()
   /* Finger Print sensor init */
   fpSetup(); // Sets up fp sensor
 
-  /* Unlock Procedure - fingerprint */
+  /* Unlock Procedure */
   fpUnlockDevice(unlockHandler, USERLED);
+  /* Unlock via pin */
+  insertPin();
 
   /* Init SPIFFS */
   init_spiffs_db();

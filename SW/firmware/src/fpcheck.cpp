@@ -1,5 +1,6 @@
 /* Includes */
 #include "fpcheck.h"
+#include "authentication.h"
 
 /* Defines */
 #define RX_PIN GPIO_NUM_16 // GPIO PIN 16 as RX
