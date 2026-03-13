@@ -13,7 +13,7 @@
 
 /* Global variables */
 int unlockHandler = 0; // Handles authentication
-int fails = 0;
+int fail = 0;
 int uploadHandler = 0;     // Handles upload action
 int connectionHandler = 0; // Handles connection to the app
 int downloadHandler = 0;   // Handles download action
@@ -38,9 +38,11 @@ void setup()
   fpSetup(); // Sets up fp sensor
 
   /* Unlock Procedure */
-  fpUnlockDevice(unlockHandler, USERLED);
-  /* Unlock via pin */
-  insertPin();
+  fail = fpUnlockDevice(unlockHandler, USERLED);
+  if (fail == 3)
+  {
+    insertPin(fail);
+  }
 
   /* Init SPIFFS */
   init_spiffs_db();

@@ -13,6 +13,6 @@
 
 /* PIN page */
 int comparePins(int setPin[], int insertedPin[]);
-void insertPin();
+void insertPin(int fail);
 
 #endif // AUTHENTICATION_H

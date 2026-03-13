@@ -39,7 +39,7 @@ int comparePins(int setPin[], int insertedPin[])
 /*
     @brief This function is the first step authentication, insert 4-digit pin
 */
-void insertPin()
+void insertPin(int fail)
 {
     uint8_t currPos;
     uint8_t unlock = 0; // 0 device locked, 1 device unlocked
@@ -139,7 +139,25 @@ void insertPin()
             if (unlock == 0)
             {
                 currPos = 0;
-                Serial.println("Insert pin again...");
+                while (1)
+                {
+                    display.setCursor(25, 25); // set cursor position
+                    display.println((String) "DEVICE BLOCKED");
+                    display.display();
+                    delay(1000);
+                    display.clearDisplay();
+
+                    unsigned long startTime = millis();
+                    while (millis() - startTime < 30000)
+                    {
+                        display.setCursor(25, 25); // set cursor position
+                        display.println((String) "WAIT 30 SECONDS");
+                        display.display();
+                        delay(1000);
+                        display.clearDisplay();
+                    }
+                    break;
+                }
             }
             else
             {
