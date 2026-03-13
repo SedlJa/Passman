@@ -12,8 +12,6 @@
 /* HELLO */
 
 /* Global variables */
-int unlockHandler = 0; // Handles authentication
-int fail = 0;
 int uploadHandler = 0;     // Handles upload action
 int connectionHandler = 0; // Handles connection to the app
 int downloadHandler = 0;   // Handles download action
@@ -38,11 +36,7 @@ void setup()
   fpSetup(); // Sets up fp sensor
 
   /* Unlock Procedure */
-  fail = fpUnlockDevice(unlockHandler, USERLED);
-  if (fail == 3)
-  {
-    insertPin(fail);
-  }
+  unlockProcedure();
 
   /* Init SPIFFS */
   init_spiffs_db();
@@ -179,54 +173,9 @@ void loop()
           }
         }
       }
-      //}
     }
   }
 
-  // DOWNLOAD DATABASE
-  /*
-  else if (rotaryEncoder.readEncoder() == 3) // Download
-  {
-    menuPage3();
-    if (rotaryEncoder.isEncoderButtonClicked())
-    {
-      downloadHandler = 1;
-    }
-    while (downloadHandler == 1)
-    {
-      if (Serial.available() > 0)
-      {
-        String message = Serial.readStringUntil('\n');
-        message.trim(); // Remove any trailing whitespace or newline characters
-        if (message == "download")
-        {
-          // Read the database length from the next line
-          while (Serial.available() == 0)
-          {
-            // Wait for data
-          }
-          String lengthLine = Serial.readStringUntil('\n');
-          lengthLine.trim();
-          int newDbLength = lengthLine.toInt();
-
-          for (int i = 0; i < newDbLength; i++)
-          {
-            while (Serial.available() == 0)
-            {
-              // Wait for data
-            }
-            String dataLine = Serial.readStringUntil('\n');
-            dataLine.trim();                // Remove any trailing whitespace or newline characters
-            parseAndStoreData(dataLine, i); // data are being decrypted in this function
-            dataLine = "";
-          }
-          downloadHandler = 0;
-          break;
-        }
-      }
-    }
-  }
-  */
   // SAVE DATABASE
   else if (rotaryEncoder.readEncoder() == 4) // Save
   {

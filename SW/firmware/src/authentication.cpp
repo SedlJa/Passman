@@ -139,24 +139,31 @@ void insertPin(int fail)
             if (unlock == 0)
             {
                 currPos = 0;
-                while (1)
+                if (fail == 3)
                 {
-                    display.setCursor(25, 25); // set cursor position
-                    display.println((String) "DEVICE BLOCKED");
-                    display.display();
-                    delay(1000);
-                    display.clearDisplay();
-
-                    unsigned long startTime = millis();
-                    while (millis() - startTime < 30000)
+                    fail++;
+                }
+                else
+                {
+                    while (1)
                     {
                         display.setCursor(25, 25); // set cursor position
-                        display.println((String) "WAIT 30 SECONDS");
+                        display.println((String) "DEVICE BLOCKED");
                         display.display();
                         delay(1000);
                         display.clearDisplay();
+
+                        unsigned long startTime = millis();
+                        while (millis() - startTime < 30000)
+                        {
+                            display.setCursor(25, 25); // set cursor position
+                            display.println((String) "WAIT 30 SECONDS");
+                            display.display();
+                            delay(1000);
+                            display.clearDisplay();
+                        }
+                        break;
                     }
-                    break;
                 }
             }
             else
@@ -166,6 +173,21 @@ void insertPin(int fail)
                 rotaryEncoder.setEncoderValue(1);
                 break;
             }
+        }
+    }
+}
+
+void unlockProcedure()
+{
+    int unlockHandler = 0; // Handles authentication
+    int fail = 0;
+    fail = fpUnlockDevice(unlockHandler, 13);
+    if (fail == 3)
+    {
+        insertPin(fail);
+        if (fail == 4)
+        {
+            insertPin(fail);
         }
     }
 }

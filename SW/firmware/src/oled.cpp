@@ -25,9 +25,11 @@ int getBatteryLevelPercentage(int pin)
     v *= 2.0;
 
     // Convert voltage to percentage
-    float percentage = (v - 3.0) / (4.2 - 3.0) * 100.0; // Assuming 3.0V is 0% and 4.2V is 100%
+    float percentage = (v - 3.0) / (3.9 - 3.0) * 100.0; // Assuming 3.0V is 0% and 4.2V is 100%
     percentage = constrain(percentage, 0.0, 100.0);     // Clamp the value between 0% and 100%
 
+    // Round percentage to the nearest multiple of 5
+    percentage = round(percentage / 5.0) * 5.0;
     return percentage;
 }
 
