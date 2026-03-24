@@ -153,7 +153,7 @@ void menuPage2()
 void placeFP()
 {
     display.clearDisplay();
-    display.setCursor(0, 7);
+    display.setCursor(30, 15);
     display.println("Place Finger");
     display.display();
     delay(10);
@@ -162,8 +162,8 @@ void placeFP()
 void remove()
 {
     display.clearDisplay();
-    display.setCursor(0, 7);
-    display.println("remove Finger");
+    display.setCursor(30, 15);
+    display.println("Remove Finger");
     display.display();
     delay(10);
     display.clearDisplay();
@@ -171,8 +171,18 @@ void remove()
 void addedFP()
 {
     display.clearDisplay();
-    display.setCursor(0, 7);
+    display.setCursor(20, 15);
     display.println("Fingerprint added!");
+    display.display();
+    delay(10);
+    display.clearDisplay();
+}
+
+void failFP()
+{
+    display.clearDisplay();
+    display.setCursor(20, 15);
+    display.println("No match found!");
     display.display();
     delay(10);
     display.clearDisplay();

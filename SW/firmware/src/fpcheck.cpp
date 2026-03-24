@@ -118,6 +118,8 @@ uint8_t getFingerprintID()
     else if (p == FINGERPRINT_NOTFOUND)
     {
         Serial.println("Did not find a match");
+        failFP();
+        delay(2000);
         return p;
     }
     else

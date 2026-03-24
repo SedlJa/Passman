@@ -65,6 +65,7 @@ void placeFP();
 void remove();
 void addedFP();
 void getID(int rotaryVal);
+void failFP();
 
 /* Author page */
 void deviceInfo();
