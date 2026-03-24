@@ -28,6 +28,7 @@ extern const unsigned char epd_bitmap_savedb[];
 extern const unsigned char epd_bitmap_deleteall[];
 extern const unsigned char epd_bitmap_devinfo[];
 extern const unsigned char epd_bitmap_connect[];
+extern const unsigned char epd_bitmap_addFP[];
 
 /* Functions */
 int getBatteryLevelPercentage(int pin);
@@ -45,6 +46,7 @@ void menuPage3(); // download
 void menuPage4(); // save
 void menuPage5(); // delete all
 void menuPage6(); // dev info
+void menuPage7(); // dev info
 
 /* Connecting page */
 void connectingPage1();
@@ -57,6 +59,12 @@ void downloadPage();
 
 /* Database */
 void databasePage(int dbEntry);
+
+/* enroll FP */
+void placeFP();
+void remove();
+void addedFP();
+void getID(int rotaryVal);
 
 /* Author page */
 void deviceInfo();

@@ -5,7 +5,7 @@
 #define ROTARY_ENCODER_B_PIN 9
 #define ROTARY_ENCODER_BUTTON_PIN 10
 #define ROTARY_ENCODER_VCC_PIN -1
-#define ROTARY_ENCODER_STEPS 4
+#define ROTARY_ENCODER_STEPS 2
 
 // Create an instance of the rotary encoder
 AiEsp32RotaryEncoder rotaryEncoder = AiEsp32RotaryEncoder(ROTARY_ENCODER_A_PIN, ROTARY_ENCODER_B_PIN, ROTARY_ENCODER_BUTTON_PIN, ROTARY_ENCODER_VCC_PIN, ROTARY_ENCODER_STEPS);
@@ -23,7 +23,7 @@ void rotary_setup()
     // Set boundaries and if values should cycle or not
     bool circleValues = false;
     rotaryEncoder.setBoundaries(1, 6, circleValues); // minValue, maxValue, circleValues true|false (when max go to min and vice versa)
-    rotaryEncoder.setAcceleration(1);                // Set acceleration factor
+    rotaryEncoder.setAcceleration(50);               // Set acceleration factor
 
     // Check if encoder is initialized
     if (initVal == 1)

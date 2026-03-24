@@ -64,9 +64,16 @@ void loop()
   }
 
   // Connect to APP
-  else if (rotaryEncoder.readEncoder() == 2 && 3) // Upload
+  else if (rotaryEncoder.readEncoder() == 2) // Upload
   {
     menuPage2();
+
+    // Initialize Serial port
+    if (!Serial)
+    {
+      Serial.begin(115200); // Start Serial communication at 115200 baud rate
+      delay(100);           // Short delay to ensure Serial is ready
+    }
 
     if (rotaryEncoder.isEncoderButtonClicked(300)) // When encoder is clicked
     {
@@ -169,10 +176,42 @@ void loop()
             connectionHandler = 0;
             Serial.println("Disconnected from app.");
             digitalWrite(USERLED, LOW); // Turn off USER LED
+
+            Serial.end(); // Turn off Serial communication
             break;
           }
         }
       }
+    }
+  }
+
+  // ADD FP
+  else if (rotaryEncoder.readEncoder() == 3) // Reboot
+  {
+    menuPage3(); // You may want a dedicated menu page for Reboot
+    if (rotaryEncoder.isEncoderButtonClicked())
+    {
+
+      Serial.println("Ready to enroll a fingerprint!");
+      Serial.println("Please type in the ID # (from 1 to 127) you want to save this finger as...");
+      int id;
+      rotaryEncoder.setBoundaries(1, 10, false);
+      rotaryEncoder.setEncoderValue(1);
+      while (!rotaryEncoder.isEncoderButtonClicked())
+      {
+        id = rotaryEncoder.readEncoder();
+        getID(id);
+      }
+      rotaryEncoder.setBoundaries(1, 6, false);
+      if (id == 0)
+      { // ID #0 not allowed, try again!
+        return;
+      }
+      Serial.print("Enrolling ID #");
+      Serial.println(id);
+
+      while (!getFingerprintEnroll(id))
+        ;
     }
   }
 
