@@ -125,19 +125,6 @@ python app.py
 
 Python dependencies are listed in `SW/app/requirements.txt`.
 
-## Basic Usage
-
-1. Flash the firmware to the ESP32-S3.
-2. Upload the SPIFFS filesystem data.
-3. Unlock the device using fingerprint authentication or the PIN fallback.
-4. Open the `Connect to App` menu on the device and confirm with the rotary encoder.
-5. Start the desktop app.
-6. Select the correct serial port and connect.
-7. Use `Load DB` to read entries from the device.
-8. Edit the database in the app.
-9. Use `Upload DB` to send the database back to the device.
-10. Save the database on the device from the firmware menu.
-
 ## Communication
 
 The desktop application and firmware communicate over USB serial at `115200 baud`.
@@ -152,15 +139,6 @@ Supported commands include:
 ## Security Notice
 
 This project is currently a prototype / thesis implementation. Before using it for real credentials, the security model should be reviewed and hardened.
-
-Important points for future work:
-
-- Do not commit private keys or secrets to the repository.
-- Move encryption keys out of source code.
-- Add a secure key provisioning process.
-- Review database encryption and storage.
-- Add stronger authentication and recovery handling.
-- Add tests for the serial protocol and database parsing.
 
 ## Author
 
