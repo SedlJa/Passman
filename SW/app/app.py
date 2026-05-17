@@ -474,7 +474,7 @@ class MainWindow(QMainWindow):
                             entryID = parts[0].strip()
                             entryUSRNAME = parts[1].strip()
                             entryPSW = parts[2].strip()
-                            print(f"ID: {entryID}, Username: {entryUSRNAME}, Password: {entryPSW}")
+                            print(f"{entryID};{entryUSRNAME};{entryPSW}")
 
                             # Decode the base64-encoded strings and decrypt them
                             entryID = decrypt_data((entryID))
