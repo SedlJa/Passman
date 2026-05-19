@@ -1,9 +1,74 @@
 /* Includes */
 #include "encryption.h"
+#include "esp_efuse.h"
 
 /* Defines */
+static uint8_t secret_key[AES_KEY_SIZE];
+static bool secret_key_loaded = false;
 
 /* Functions */
+static bool load_secret_key_from_efuse()
+{
+    if (secret_key_loaded)
+    {
+        return true;
+    }
+
+    esp_err_t err = esp_efuse_read_block(EFUSE_BLK_USER_DATA, secret_key, 0, AES_KEY_SIZE * 8);
+    if (err != ESP_OK)
+    {
+        Serial.printf("Error: Failed to read AES key from eFuse. Code: %d\n", err);
+        return false;
+    }
+
+    bool key_is_empty = true;
+    for (size_t i = 0; i < AES_KEY_SIZE; i++)
+    {
+        if (secret_key[i] != 0)
+        {
+            key_is_empty = false;
+            break;
+        }
+    }
+
+    if (key_is_empty)
+    {
+        Serial.println("Error: AES key in eFuse is empty.");
+        return false;
+    }
+
+    secret_key_loaded = true;
+    return true;
+}
+
+void print_secret_key_debug()
+{
+    if (!load_secret_key_from_efuse())
+    {
+        Serial.println("eFuse AES key debug: unavailable");
+        return;
+    }
+
+    Serial.print("eFuse AES key HEX: ");
+    for (size_t i = 0; i < AES_KEY_SIZE; i++)
+    {
+        if (secret_key[i] < 0x10)
+        {
+            Serial.print("0");
+        }
+        Serial.print(secret_key[i], HEX);
+        if (i < AES_KEY_SIZE - 1)
+        {
+            Serial.print(" ");
+        }
+    }
+    Serial.println();
+
+    Serial.print("eFuse AES key ASCII: ");
+    Serial.write(secret_key, AES_KEY_SIZE);
+    Serial.println();
+}
+
 /**
  * @brief encrypt data using AES
  *
@@ -12,6 +77,11 @@
  */
 String encrypt_data(const char *plaintext)
 {
+    if (!load_secret_key_from_efuse())
+    {
+        return {};
+    }
+
     mbedtls_aes_context aes_ctx;
     size_t plaintext_len = strlen(plaintext);
 
@@ -37,7 +107,12 @@ String encrypt_data(const char *plaintext)
 
     // 3. Initialize the AES context
     mbedtls_aes_init(&aes_ctx);
-    mbedtls_aes_setkey_enc(&aes_ctx, (const unsigned char *)SECRET_KEY, 128);
+    if (mbedtls_aes_setkey_enc(&aes_ctx, secret_key, KEY_BITS) != 0)
+    {
+        Serial.println("Error: Failed to set encryption key.");
+        mbedtls_aes_free(&aes_ctx);
+        return {};
+    }
 
     // 4. Encrypt
     std::vector<uint8_t> ciphertext(padded_len);
@@ -82,17 +157,22 @@ String encrypt_data(const char *plaintext)
  */
 String decrypt_data(const String &base64_encrypted_data)
 {
+    if (!load_secret_key_from_efuse())
+    {
+        return "";
+    }
+
     // 1. Base64 Decode the input String
     size_t decoded_len = 0;
     const unsigned char *input_ptr = (const unsigned char *)base64_encrypted_data.c_str();
     size_t input_len = base64_encrypted_data.length();
 
-    // Determine required buffer size
-    int ret = mbedtls_base64_decode(NULL, 0, &decoded_len, input_ptr, input_len);
+    // Allocate buffer for Base64 decoding
+    int ret = mbedtls_base64_decode(nullptr, 0, &decoded_len, input_ptr, input_len);
 
-    if (ret != MBEDTLS_ERR_BASE64_BUFFER_TOO_SMALL && ret != 0)
+    if (ret != 0 && ret != MBEDTLS_ERR_BASE64_BUFFER_TOO_SMALL)
     {
-        Serial.printf("Error: Base64 pre-check failed. Code: %d\n", ret);
+        Serial.printf("Error: Base64 decoding pre-check failed. Code: %d\n", ret);
         return "";
     }
 
@@ -129,7 +209,7 @@ String decrypt_data(const String &base64_encrypted_data)
     mbedtls_aes_context aes_ctx;
     mbedtls_aes_init(&aes_ctx);
 
-    if (mbedtls_aes_setkey_dec(&aes_ctx, (const unsigned char *)SECRET_KEY, KEY_BITS) != 0)
+    if (mbedtls_aes_setkey_dec(&aes_ctx, secret_key, KEY_BITS) != 0)
     {
         Serial.println("Error: Failed to set decryption key.");
         mbedtls_aes_free(&aes_ctx);
