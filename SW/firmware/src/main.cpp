@@ -55,8 +55,8 @@ void loop()
     menuPage1();
     if (rotaryEncoder.isEncoderButtonClicked(300))
     {
-      rotaryEncoder.setBoundaries(0, dbLength - 1, false); // update boundaries to db lenght
       rotaryEncoder.setEncoderValue(0);
+      rotaryEncoder.setBoundaries(0, dbLength - 1, false); // update boundaries to db lenght
       while (!rotaryEncoder.isEncoderButtonClicked())
       {
         databasePage(rotaryEncoder.readEncoder()); // show database
