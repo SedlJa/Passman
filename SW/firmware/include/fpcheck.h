@@ -21,3 +21,11 @@ uint8_t getFingerprintEnroll(int id);        // function to add fingerprint
 int fpUnlockDevice(int handler, int ledpin); // Function that runs authentification procedure
 
 #endif
+
+/*
+########################################################################
+Disclaimer.
+
+Some of these functions are customized public examples.
+########################################################################
+*/

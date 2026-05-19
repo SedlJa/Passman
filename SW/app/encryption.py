@@ -2,17 +2,11 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from Crypto.Random import get_random_bytes
 import base64
-from pathlib import Path
 
 # --- Shared Secret Key ---
 # Must be identical on both the ESP32 and Python app.
 # 16 bytes for AES-128
-
-# Load secret_key from file
-KEY_FILE = Path(__file__).with_name("secret_key.key")
-SECRET_KEY = KEY_FILE.read_bytes().strip()
-if len(SECRET_KEY) != 16:
-    raise ValueError(f"Invalid key length in {KEY_FILE.name}: expected 16 bytes, got {len(SECRET_KEY)}")
+SECRET_KEY = b'AbcCYr9RLcXtO86P'
 
 def decrypt_data(encrypted_data_b64):
     """

@@ -6,5 +6,3 @@ SW/app/env
 SW/app/secret.key
 _images/diagrams
 .DS_Store
-export
-
