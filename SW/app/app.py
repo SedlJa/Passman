@@ -1,21 +1,20 @@
-# pylint: disable=all
-
 import sys
-from PySide6 import QtWidgets, QtCore, QtGui
-from PySide6.QtWidgets import QApplication, QMainWindow
-from PySide6.QtSerialPort import QSerialPort, QSerialPortInfo
-from PySide6.QtCore import QIODevice
-from PySide6.QtGui import QIcon
-import hashlib
-import serial.tools.list_ports
-from encryption import *
 import random
 import string
+
+import serial.tools.list_ports
+from PySide6 import QtWidgets, QtCore, QtGui
+from PySide6.QtWidgets import QApplication, QMainWindow
+from PySide6.QtSerialPort import QSerialPort
+from PySide6.QtCore import QIODevice
+
+from encryption import decrypt_data
 
 
 # search for avalable serial ports
 available_ports = serial.tools.list_ports.comports()
 available_ports_list = [port.device for port in available_ports]
+
 
 class MainWindow(QMainWindow):
     def __init__(self):

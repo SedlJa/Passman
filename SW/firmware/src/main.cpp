@@ -19,7 +19,12 @@ int dbLength = 0;          // Updates database legth
 
 void setup()
 {
+  /* OLED display init */
+  display_setup();
+  display.clearDisplay(); // init clearence
+
   Serial.begin(BAUDRATE);
+
   /* User LED setup */
   pinMode(USERLED, OUTPUT);
 
@@ -28,9 +33,6 @@ void setup()
 
   /* Rotary encoder init */
   rotary_setup();
-
-  /* OLED display init */
-  display_setup();
 
   /* Finger Print sensor init */
   fpSetup(); // Sets up fp sensor
