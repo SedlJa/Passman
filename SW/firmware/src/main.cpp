@@ -4,6 +4,7 @@
 #include "fpcheck.h"
 #include "database.h"
 #include "encryption.h"
+#include "authentication.h"
 
 #define BAUDRATE 115200
 #define USERLED 13 // blue user led definition
@@ -11,15 +12,19 @@
 /* HELLO */
 
 /* Global variables */
-int unlockHandler = 0;          // Handles authentication
-bool connectionHandler = false; // Handles connection to webUI
-bool dbHandler = true;
-bool stringComplete = false;
-String receivedData = " ";
+int uploadHandler = 0;     // Handles upload action
+int connectionHandler = 0; // Handles connection to the app
+int downloadHandler = 0;   // Handles download action
+int dbLength = 0;          // Updates database legth
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(BAUDRATE);
+  /* User LED setup */
+  pinMode(USERLED, OUTPUT);
+
+  /* Battery level setup */
+  pinMode(3, INPUT);
 
   /* Rotary encoder init */
   rotary_setup();
@@ -30,127 +35,214 @@ void setup()
   /* Finger Print sensor init */
   fpSetup(); // Sets up fp sensor
 
-  /* Unlock Procedure - fingerprint */
-  fpUnlockDevice(unlockHandler);
+  /* Unlock Procedure */
+  unlockProcedure();
 
-  /* database init */
-  loadDatabase();
+  /* Init SPIFFS */
+  init_spiffs_db();
 
-  // This is the Base64 string from the Python encryption example: "ACK_OK"
-  const String encrypted_from_python = "Lc9GKQS0eNhop/8/K/H82Yl8KAzYKjNGMz27u9y8b+o=";
-  Serial.print("Encrypted (Base64 from Python): ");
-  Serial.println(encrypted_from_python);
-
-  String decrypted_message = decrypt_data(encrypted_from_python);
-
-  if (decrypted_message.length() > 0)
-  {
-    Serial.print("\n**Decrypted (ESP32 String): ");
-    Serial.print(decrypted_message);
-    Serial.println("**");
-  }
-  else
-  {
-    Serial.println("\nDecryption failed.");
-  }
+  /* update db length */
+  dbLength = updateDbLength();
 }
 
 void loop()
 {
-
   // BASIC MENU
   if (rotaryEncoder.readEncoder() == 1) // Database
   {
     menuPage1();
     if (rotaryEncoder.isEncoderButtonClicked(300))
     {
-      rotaryEncoder.setBoundaries(0, DB_LENGTH - 1, false); // update boundaries to db lenght
+      rotaryEncoder.setBoundaries(0, dbLength - 1, false); // update boundaries to db lenght
       rotaryEncoder.setEncoderValue(0);
       while (!rotaryEncoder.isEncoderButtonClicked())
       {
         databasePage(rotaryEncoder.readEncoder()); // show database
       }
-      rotaryEncoder.setBoundaries(1, 3, false); // update boundaries to db lenght
+      rotaryEncoder.setBoundaries(1, 6, false); // update boundaries to db lenght
     }
   }
-  else if (rotaryEncoder.readEncoder() == 2) // Connect
+
+  // Connect to APP
+  else if (rotaryEncoder.readEncoder() == 2) // Upload
   {
     menuPage2();
-    if (rotaryEncoder.isEncoderButtonClicked())
+
+    // Initialize Serial port
+    if (!Serial)
     {
-      rotaryEncoder.setBoundaries(1, 2, true); // Update boundaries
-      rotaryEncoder.setEncoderValue(1);        // set value to 1
-      // bool choose = false;
-      while (!rotaryEncoder.isEncoderButtonDown())
+      Serial.begin(115200); // Start Serial communication at 115200 baud rate
+      delay(100);           // Short delay to ensure Serial is ready
+    }
+
+    if (rotaryEncoder.isEncoderButtonClicked(300)) // When encoder is clicked
+    {
+      // Open the JSON file
+      FILE *file = fopen("/spiffs/device.json", "r");
+      if (!file)
       {
-        if (rotaryEncoder.readEncoder() == 1) // Upload database to app
+        Serial.println("Failed to open device.json");
+        return;
+      }
+
+      // Read the file into a buffer
+      char buffer[256];
+      size_t bytesRead = fread(buffer, 1, sizeof(buffer) - 1, file);
+      buffer[bytesRead] = '\0'; // Null-terminate the buffer
+      fclose(file);
+
+      // Parse the JSON data
+      StaticJsonDocument<512> doc;
+      DeserializationError error = deserializeJson(doc, buffer);
+      if (error)
+      {
+        Serial.print("Failed to parse JSON: ");
+        Serial.println(error.c_str());
+        return;
+      }
+
+      // Extract device information
+      JsonObject deviceInfo = doc["deviceInfo"];
+      const char *deviceName = deviceInfo["device Name"];
+      const char *fwVersion = deviceInfo["FW Version"];
+      const char *hwVersion = deviceInfo["HW Version"];
+      const char *serialNumber = deviceInfo["SN"];
+
+      // Send device information to the app
+      Serial.println("Device Information:");
+      Serial.println((String) "Name: " + deviceName);
+      Serial.println((String) "FW: " + fwVersion);
+      Serial.println((String) "HW: " + hwVersion);
+      Serial.println((String) "SN: " + serialNumber);
+
+      // Turn on USER LED to indicate connection
+      connectionHandler = 1;
+      digitalWrite(USERLED, HIGH);
+      //  Serial.println("Command: upload");
+      while (connectionHandler == 1)
+      {
+        digitalWrite(USERLED, HIGH);
+        // load command
+        if (Serial.available() > 0)
         {
-          uploadPage();
-          if (rotaryEncoder.isEncoderButtonClicked())
+          String message = Serial.readStringUntil('\n');
+          message.trim(); // Remove any trailing whitespace or newline characters
+          if (message == "load")
           {
-            // Serial.println("Command: upload");
-            while (true)
+            Serial.println("data");
+            for (int i = 0; i < dbLength; i++)
             {
-              if (Serial.available() > 0)
-              {
-                String message = Serial.readStringUntil('\n');
-                message.trim(); // Remove any trailing whitespace or newline characters
-                if (message == "load")
-                {
-                  Serial.println("data");
-                  for (int i = 0; i < DB_LENGTH; i++)
-                  {
-                    Serial.printf("%s;%s;%s\n", encrypt_data(db.id[i].c_str()).c_str(), encrypt_data(db.username[i].c_str()).c_str(), encrypt_data(db.password[i].c_str()).c_str());
-                  }
-                  break;
-                }
-              }
+              Serial.printf("%s;%s;%s\n", encrypt_data(db.id[i].c_str()).c_str(), encrypt_data(db.username[i].c_str()).c_str(), encrypt_data(db.password[i].c_str()).c_str());
             }
           }
-        }
-        else if (rotaryEncoder.readEncoder() == 2) // Download database from app
-        {
-          downloadPage();
-          if (rotaryEncoder.isEncoderButtonClicked())
+          // Download command
+          else if (message == "download")
           {
-            while (true)
+            // Read the database length from the next line
+            while (Serial.available() == 0)
             {
-              if (Serial.available() > 0)
-              {
-                String message = Serial.readStringUntil('\n');
-                message.trim(); // Remove any trailing whitespace or newline characters
-                if (message == "download")
-                {
-                  for (int i = 0; i < 6; i++)
-                  {
-                    while (Serial.available() == 0)
-                    {
-                      // Wait for data
-                    }
-                    String dataLine = Serial.readStringUntil('\n');
-                    dataLine.trim();                // Remove any trailing whitespace or newline characters
-                    parseAndStoreData(dataLine, i); // data are being decrypted in this function
-                    dataLine = "";
-                  }
-                  break;
-                }
-              }
+              // Wait for data
             }
+            String lengthLine = Serial.readStringUntil('\n');
+            lengthLine.trim();
+            int newDbLength = lengthLine.toInt();
+            dbLength = newDbLength; // update db length
+
+            for (int i = 0; i < newDbLength; i++)
+            {
+              while (Serial.available() == 0)
+              {
+                // Wait for data
+              }
+              String dataLine = Serial.readStringUntil('\n');
+              dataLine.trim();                // Remove any trailing whitespace or newline characters
+              parseAndStoreData(dataLine, i); // data are being decrypted in this function
+              dataLine = "";
+            }
+          }
+          // Handle info command
+          else if (message == "info")
+          {
+            // Send device information to the app
+            Serial.println("Device Information:");
+            Serial.println((String) "Name: " + deviceName);
+            Serial.println((String) "FW: " + fwVersion);
+            Serial.println((String) "HW: " + hwVersion);
+            Serial.println((String) "SN: " + serialNumber);
+          }
+          // Handle "disconnect" command
+          else if (message == "disconnect")
+          {
+            connectionHandler = 0;
+            Serial.println("Disconnected from app.");
+            digitalWrite(USERLED, LOW); // Turn off USER LED
+
+            Serial.end(); // Turn off Serial communication
+            break;
           }
         }
       }
     }
   }
 
-  else if (rotaryEncoder.readEncoder() == 3) // Settings
+  // ADD FP
+  else if (rotaryEncoder.readEncoder() == 3) // Reboot
   {
-    menuPage3();
+    menuPage3(); // You may want a dedicated menu page for Reboot
+    if (rotaryEncoder.isEncoderButtonClicked())
+    {
 
+      Serial.println("Ready to enroll a fingerprint!");
+      Serial.println("Please type in the ID # (from 1 to 127) you want to save this finger as...");
+      int id;
+      rotaryEncoder.setBoundaries(1, 10, false);
+      rotaryEncoder.setEncoderValue(1);
+      while (!rotaryEncoder.isEncoderButtonClicked())
+      {
+        id = rotaryEncoder.readEncoder();
+        getID(id);
+      }
+      rotaryEncoder.setBoundaries(1, 6, false);
+      if (id == 0)
+      { // ID #0 not allowed, try again!
+        return;
+      }
+      Serial.print("Enrolling ID #");
+      Serial.println(id);
+
+      while (!getFingerprintEnroll(id))
+        ;
+    }
+  }
+
+  // SAVE DATABASE
+  else if (rotaryEncoder.readEncoder() == 4) // Save
+  {
+    menuPage4(); // You may want a dedicated menu page for Save
+    if (rotaryEncoder.isEncoderButtonClicked())
+    {
+      save_spiffs_db();
+    }
+  }
+
+  // DELETE ALL DATABASE
+  else if (rotaryEncoder.readEncoder() == 5) // Delete All
+  {
+    menuPage5(); // You may want a dedicated menu page for Delete All
+    if (rotaryEncoder.isEncoderButtonClicked())
+    {
+      delete_spiffs_db();
+    }
+  }
+  // SHOW DEVICE INFORMATION
+  else if (rotaryEncoder.readEncoder() == 6) // Settings
+  {
+    menuPage6();
     if (rotaryEncoder.isEncoderButtonClicked())
     {
       while (!rotaryEncoder.isEncoderButtonClicked())
       {
-        authorInfo();
+        deviceInfo();
       }
     }
   }
