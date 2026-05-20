@@ -1,7 +1,5 @@
 # This file is used to ignore files and directories in a Git repository.
 
-HW/Fusion
-HW/pcb/
 SW/app/env
 SW/app/secret.key
 _images/diagrams
