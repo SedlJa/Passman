@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP PEC09-2325F-S0015
+D Rotary Encoder Mechanical 15 Quadrature (Incremental) Right Angle
+K
+F https://www.bourns.com/docs/product-datasheets/pec09.pdf
+$ENDCMP
+#
+#End Doc Library

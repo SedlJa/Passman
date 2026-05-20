@@ -1,0 +1,883 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "b7a685c6-2f40-4524-a5a6-251b5d38e6db")
+	(paper "A4")
+	(title_block
+		(title "PassMan - BLOCK DIAGRAM ")
+		(date "2025-09-18")
+		(rev "V2")
+	)
+	(lib_symbols)
+	(text "PassMan - BLOCK DIAGRAM\n"
+		(exclude_from_sim no)
+		(at 51.562 21.082 0)
+		(effects
+			(font
+				(size 3 3)
+			)
+		)
+		(uuid "8e04da9f-c8d3-42e8-aa36-be49c6c820b2")
+	)
+	(wire
+		(pts
+			(xy 177.8 119.38) (xy 200.66 119.38)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "05782eef-a0cc-4569-b646-5ac36f4f2a49")
+	)
+	(wire
+		(pts
+			(xy 76.2 107.95) (xy 87.63 107.95)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "178f71d0-b2c8-4828-9670-faa1d8d077b8")
+	)
+	(wire
+		(pts
+			(xy 177.8 127) (xy 200.66 127)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "220d40c2-9dd4-4d3c-b9d1-f826f929a719")
+	)
+	(wire
+		(pts
+			(xy 177.8 82.55) (xy 200.66 82.55)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3296d025-e0c0-4caf-95ad-8d70048880b4")
+	)
+	(wire
+		(pts
+			(xy 115.57 97.79) (xy 124.46 97.79)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3f9ecf32-4995-4f98-8baa-b0a295eb019b")
+	)
+	(wire
+		(pts
+			(xy 177.8 66.04) (xy 200.66 66.04)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "50e63e90-962c-40ac-9ddd-719025426bc0")
+	)
+	(wire
+		(pts
+			(xy 177.8 123.19) (xy 200.66 123.19)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6f1c177d-8e33-42b8-a7dc-fd2469d937ff")
+	)
+	(wire
+		(pts
+			(xy 177.8 99.06) (xy 200.66 99.06)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "700f100b-c596-4155-8a4e-e3f71a10fa71")
+	)
+	(wire
+		(pts
+			(xy 76.2 101.6) (xy 87.63 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7f044cac-2562-49c4-bc21-6fdd8e66de54")
+	)
+	(wire
+		(pts
+			(xy 177.8 115.57) (xy 200.66 115.57)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7fb824f0-2064-4263-a691-cf7783f3435f")
+	)
+	(wire
+		(pts
+			(xy 177.8 102.87) (xy 200.66 102.87)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "af33ece0-598a-465a-9dfe-6aae8c51dc94")
+	)
+	(wire
+		(pts
+			(xy 177.8 86.36) (xy 200.66 86.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b8aed24d-e7be-4e9b-a48b-1e20c107a3c3")
+	)
+	(wire
+		(pts
+			(xy 115.57 106.68) (xy 149.86 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bc6d7a90-8981-4970-acf0-288dd747ccf0")
+	)
+	(wire
+		(pts
+			(xy 115.57 109.22) (xy 149.86 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ce57fc21-48d5-42e1-803c-859bb81531d3")
+	)
+	(wire
+		(pts
+			(xy 177.8 62.23) (xy 200.66 62.23)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d7220c50-fb94-4665-bf14-c35be72300b7")
+	)
+	(wire
+		(pts
+			(xy 177.8 78.74) (xy 200.66 78.74)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "de4f9273-e074-4dff-8763-e7d9c1339d36")
+	)
+	(wire
+		(pts
+			(xy 142.24 97.79) (xy 149.86 97.79)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ec7489ba-b353-4476-8f69-3ffa4683ed98")
+	)
+	(sheet
+		(at 200.66 74.93)
+		(size 20.32 15.24)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 194 0 0.2000)
+		)
+		(uuid "0c898ed0-cc7d-4d0f-b841-405bc2e6d77f")
+		(property "Sheetname" "Rotary"
+			(at 200.66 74.2184 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "roatry.kicad_sch"
+			(at 200.66 90.7546 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "CLK_ENCODER" output
+			(at 200.66 78.74 180)
+			(uuid "3c20b105-0a9d-4bd9-90fe-61ac906d31db")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "SW_ENCODER" output
+			(at 200.66 82.55 180)
+			(uuid "bac099af-4660-4b23-97b1-f4168bc076e5")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "DT_ENCODER" output
+			(at 200.66 86.36 180)
+			(uuid "b41ad56c-0697-4354-9434-2f6d24989476")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(instances
+			(project "Passman"
+				(path "/b7a685c6-2f40-4524-a5a6-251b5d38e6db"
+					(page "7")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 149.86 58.42)
+		(size 27.94 73.66)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 255 255 194 1.0000)
+		)
+		(uuid "2381f0ff-dc71-425b-9df2-d37bb370510f")
+		(property "Sheetname" "ESP32_S3"
+			(at 149.86 57.7084 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "esp32.kicad_sch"
+			(at 149.86 132.6646 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "RESET" input
+			(at 177.8 127 0)
+			(uuid "eda6c322-49ea-431c-89e7-2c1653d9ff15")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "BATT_READ" input
+			(at 177.8 115.57 0)
+			(uuid "fd774e56-7c17-4466-a8d5-2f0526395cc9")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "RX_FPSensor" input
+			(at 177.8 62.23 0)
+			(uuid "99ef4796-ee36-4e73-80e4-0cf3d92f898e")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "CLK_ENCODER" input
+			(at 177.8 78.74 0)
+			(uuid "00af27a1-fb14-4686-9aee-119e52ac6d82")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "SCL_OLED" output
+			(at 177.8 102.87 0)
+			(uuid "813e2148-6a2c-4869-9b5d-0d488ed87dfe")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "+3.3V" input
+			(at 149.86 97.79 180)
+			(uuid "a7bc9ed0-5a51-4756-9401-b1116d6e83bf")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "USER_LED" output
+			(at 177.8 119.38 0)
+			(uuid "f3c7b356-6fb3-45c7-bba5-3638b97d44a0")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "DT_ENCODER" input
+			(at 177.8 86.36 0)
+			(uuid "d8be9868-cc9c-4502-b52b-8eef7f409ea6")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "BOOT" input
+			(at 177.8 123.19 0)
+			(uuid "375d075f-5c0b-4a37-aad3-d46561f010f7")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "TX_FPSensor" output
+			(at 177.8 66.04 0)
+			(uuid "af6e5518-7074-4d60-b371-9bf4b00557a8")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "SW_ENCODER" input
+			(at 177.8 82.55 0)
+			(uuid "0d0f9b4a-409a-4381-91cc-d93a226e7254")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "SDA_OLED" output
+			(at 177.8 99.06 0)
+			(uuid "3d22be3d-a58b-4427-a5c7-c9a844f94d3d")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "D+" input
+			(at 149.86 106.68 180)
+			(uuid "153f1536-8cee-4afe-9966-ec7581463011")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "D-" input
+			(at 149.86 109.22 180)
+			(uuid "439f2401-ae91-4048-b9e3-b2eae491364e")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(instances
+			(project "Passman"
+				(path "/b7a685c6-2f40-4524-a5a6-251b5d38e6db"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 200.66 111.76)
+		(size 26.67 19.05)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 194 0 0.2000)
+		)
+		(uuid "6d049802-2c28-4ed5-9692-35c6123ed31e")
+		(property "Sheetname" "Peripherals"
+			(at 200.66 111.0484 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "peripherals.kicad_sch"
+			(at 200.66 131.3946 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "RESET" output
+			(at 200.66 127 180)
+			(uuid "bc899584-7519-4e2b-915f-19cdcf088994")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "BATT_READ" output
+			(at 200.66 115.57 180)
+			(uuid "48c79ba2-5455-497d-bf41-0c6c87c94bf3")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "USER_LED" input
+			(at 200.66 119.38 180)
+			(uuid "a13b7e27-7989-4c07-8fea-1e4d13a3aa67")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "BOOT" output
+			(at 200.66 123.19 180)
+			(uuid "4e92ad02-a4a1-4bb9-ba3f-089ff2718a1c")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(instances
+			(project "Passman"
+				(path "/b7a685c6-2f40-4524-a5a6-251b5d38e6db"
+					(page "4")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 124.46 92.71)
+		(size 17.78 10.16)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 255 255 0.2000)
+		)
+		(uuid "9e955c21-e3f7-4377-a265-a1bbede1bc16")
+		(property "Sheetname" "V_Regulator"
+			(at 124.46 91.9984 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "V_regulator.kicad_sch"
+			(at 124.46 103.4546 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "+5V" input
+			(at 124.46 97.79 180)
+			(uuid "eb968f8a-4317-4b14-afe0-287b4830a850")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "+3.3V" output
+			(at 142.24 97.79 0)
+			(uuid "32c4149e-a4da-4423-b904-74965cdfaf52")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(instances
+			(project "Passman"
+				(path "/b7a685c6-2f40-4524-a5a6-251b5d38e6db"
+					(page "5")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 200.66 58.42)
+		(size 19.05 11.43)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 194 0 0.2000)
+		)
+		(uuid "b3fa462d-2f34-47a3-ae5b-4099734a096f")
+		(property "Sheetname" "FP_sensor"
+			(at 200.66 57.7084 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "FP_sensor.kicad_sch"
+			(at 200.66 70.4346 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "RX_FPSensor" input
+			(at 200.66 62.23 180)
+			(uuid "f3fb06db-86e5-4af6-89e0-4be2b7e2115b")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "TX_FPSensor" output
+			(at 200.66 66.04 180)
+			(uuid "b19521f8-27df-4a51-8c8a-7817d3654ba3")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(instances
+			(project "Passman"
+				(path "/b7a685c6-2f40-4524-a5a6-251b5d38e6db"
+					(page "9")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 200.66 95.25)
+		(size 20.32 11.43)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 194 0 0.2000)
+		)
+		(uuid "bfaa287e-5990-4104-a665-806449a63c87")
+		(property "Sheetname" "OLED"
+			(at 200.66 94.5384 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "OLED.kicad_sch"
+			(at 200.66 107.2646 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "SCL_OLED" input
+			(at 200.66 102.87 180)
+			(uuid "6416c678-524e-4981-a039-e6f446b85f77")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "SDA_OLED" input
+			(at 200.66 99.06 180)
+			(uuid "fd06a7c1-bcf1-4f52-8a3f-7441bbc003c7")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(instances
+			(project "Passman"
+				(path "/b7a685c6-2f40-4524-a5a6-251b5d38e6db"
+					(page "8")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 87.63 93.98)
+		(size 27.94 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 255 255 0.2000)
+		)
+		(uuid "c6a37cfb-3c05-4086-b69f-44be054be5e8")
+		(property "Sheetname" "Power"
+			(at 87.63 93.2684 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "power.kicad_sch"
+			(at 87.63 114.8846 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "+5V" output
+			(at 115.57 97.79 0)
+			(uuid "b2f7b91a-4fb3-4f9a-a177-e14372246c09")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "D+" output
+			(at 115.57 106.68 0)
+			(uuid "d9a9c3d5-6d17-485b-8a51-df4b0dfb6e2c")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "D-" output
+			(at 115.57 109.22 0)
+			(uuid "883e1cf7-1f34-4ff2-b478-7bd821a48fc1")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "VBUS_5V" input
+			(at 87.63 101.6 180)
+			(uuid "12e12e40-4a37-4975-8ac9-7da88418f22b")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "+BATT" bidirectional
+			(at 87.63 107.95 180)
+			(uuid "5340c733-baa0-4049-8d5c-675442295863")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(instances
+			(project "Passman"
+				(path "/b7a685c6-2f40-4524-a5a6-251b5d38e6db"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 58.42 97.79)
+		(size 17.78 15.24)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 255 255 0.2000)
+		)
+		(uuid "f9bbde57-5a2a-43ff-a9b2-ae04a9d2d450")
+		(property "Sheetname" "LIPO_charging"
+			(at 58.42 97.0784 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "LIPO_charging.kicad_sch"
+			(at 58.42 113.6146 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+				(hide yes)
+			)
+		)
+		(pin "+BATT" output
+			(at 76.2 107.95 0)
+			(uuid "4261113a-a58b-45b6-ba93-59e93618420c")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "VBUS_5V" input
+			(at 76.2 101.6 0)
+			(uuid "db850f5d-56c9-43e4-b7ed-4063e3f81ca5")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(instances
+			(project "Passman"
+				(path "/b7a685c6-2f40-4524-a5a6-251b5d38e6db"
+					(page "6")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)

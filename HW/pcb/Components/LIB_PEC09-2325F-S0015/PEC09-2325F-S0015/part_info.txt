@@ -1,0 +1,9 @@
+Manufacturer=Bourns
+PartNumber=PEC09-2325F-S0015
+PartCategory=Switch
+PackageCategory=Other
+PinCount=5
+Version=1.4
+Released=2024-05-14 05:22:19
+Downloaded=2025-10-20 18:55:24
+3D=Y

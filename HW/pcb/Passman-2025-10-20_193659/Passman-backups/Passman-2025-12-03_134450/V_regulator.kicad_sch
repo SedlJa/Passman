@@ -1,0 +1,24 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "68846a78-af51-4d98-b36f-a3d0162b0fca")
+	(paper "A5")
+	(title_block
+		(title "Voltage Regulator")
+		(date "2025-09-18")
+		(rev "V2")
+	)
+	(lib_symbols)
+	(text "Switching voltage regulator\n"
+		(exclude_from_sim no)
+		(at 54.61 35.306 0)
+		(effects
+			(font
+				(size 2 2)
+				(thickness 0.25)
+			)
+		)
+		(uuid "c15af5c3-75a6-48ba-bfcf-80395ba89856")
+	)
+)
